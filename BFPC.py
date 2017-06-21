@@ -2,7 +2,7 @@ from abc import ABC,abstractmethod
 from collections import OrderedDict
 from _interfaceobjects import Byte
 from _operations import VarOp, SetOp
-
+#TODO: Index for variable name
 class Environment:
     def __init__(self):
         self.PseudoCode = [] # Contenitore delle operazioni da eseguire

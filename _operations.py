@@ -1,9 +1,10 @@
 from abc import ABC,abstractmethod
 from _internalobjects import StackObj
+from _interfaceobjects import InterfaceObj
 
 class Operation(ABC): # Operazione eseguibile e compilabile in BF
     @abstractmethod
-    def preComp(self,comp): pass
+    def preComp(self,env): pass
     @abstractmethod
     def compute(self,env, p): pass
 
@@ -13,11 +14,11 @@ class VarOp(Operation): # Operazione di creazione di una nuova istanza STATICA
         self._id = ID
         self._value = obj.getValue()
         self._byte = obj.getByte()
-    def preComp(self, comp): #Può modificare lo stato del compilatore!
-        if self._id in comp.StackObject.keys():
+    def preComp(self, env): #Può modificare lo stato del compilatore!
+        if self._id in env.StackObject.keys():
             raise "Duplicated Creation!"
         else:
-            comp.StackObject[self._id] = StackObj(self._value,self._byte)
+            env.StackObject[self._id] = StackObj(self._value, self._byte)
     def compute(self,env,p):
         #CASO SPECIALE UN BYTE:
         #TODO: Estensione a multipli Byte
@@ -37,7 +38,17 @@ class MathOp(Operation): # Operazione simil-math (Var1,Var2,MathOperatorLambda) 
     pass
 
 class SumOp(MathOp):
-    pass
+    def __init__(self,target,one,second): # target = $one + $second
+        self._neededReg = 2 # TODO: Estendere a più Byte
+        self._target = target
+        self._one = one
+        self._second = second
+    def preComp(self,env):
+        if not self._target in env.StackObject:
+            raise "Variabile bersaglio non in Stack"
+        else:
+            pass
+
 
 class MemOp(Operation): # Operazione di memoria (copy,set)(move è comb di copy e set, oppure mov semantic
     pass
@@ -47,8 +58,8 @@ class SetOp(MemOp): # Operazione di set
         #TODO: Assert the world
         self._id = ID # Id Bersaglio
         self._obj = obj # Valore da ficcare nel Berdaglio
-    def preComp(self,comp):
-        if not self._id in comp.StackObject: #TODO: Heap support
+    def preComp(self, env):
+        if not self._id in env.StackObject: #TODO: Heap support
             raise "Variabile non definita"
     def compute(self,env, p: int):
         code = ""
@@ -63,5 +74,3 @@ class SetOp(MemOp): # Operazione di set
         code += '[-]' #Azzeramento variabile
         code += "+" * targetval
         return (code, target)
-
-#TODO: Refactor comb in env in various scope

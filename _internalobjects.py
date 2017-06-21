@@ -11,7 +11,15 @@ class StackObj(MemObj): # Oggetto rappresentate variabile statica in Stack
     #TODO: Getter
 
 class RegObj(MemObj): # Oggetto rappresentante i registri temporanei
-    pass #Forse non serve neanche sta classe
+    pass #TODO: Preparare l'infrastruttura per la memorizzazione delle registryOperation
 
 class HeapOnbj(MemObj): # Oggetto rappresentante variabile dinamica in Heap
     pass
+
+class RegistryManager:
+    def __init__(self,Registry):
+        self._SIZE = Registry
+        self._registry = [RegObj()]*self._SIZE
+    def __getitem__(self, item):
+        return self._registry[item]
+
