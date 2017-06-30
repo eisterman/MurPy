@@ -48,3 +48,20 @@ class OperationManager:
         self._compiler.insertOp(op)
     def getOpBF(self):
         pass
+
+# New Environment
+class newEnvironment:
+    def __init__(self):
+        self.PseudoCode = [] # Contenitore delle operazioni da eseguire
+        self.StackObject = OrderedDict()  # Container degli StackObj
+    def Precompile(self):
+        for op in self.PseudoCode:
+            op.PreCompile(self)
+        # Measure Stack Size
+        ssize = 0
+        for obs in self.StackObject.values():
+            ssize += obs._byte
+        self.StackSize = ssize
+        # TODO: Measure REG Size
+    def Compile(self):
+        pass

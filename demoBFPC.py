@@ -1,4 +1,4 @@
-from BFPC import Environment,OperationManager,Compiler,Byte
+from MurPy import Environment,OperationManager,Compiler,Byte
 
 def main():
     executor = Environment()
