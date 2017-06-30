@@ -6,7 +6,7 @@ class MemObj(ABC):  # Oggetto rappresentante una cella di memoria
 
 
 class StackObj(MemObj):  # Oggetto rappresentate variabile statica in Stack
-    def __init__(self,value,byte=1):
+    def __init__(self, value, byte=1):
         self._value = value
         self._byte = byte
         # TODO: Error handling
