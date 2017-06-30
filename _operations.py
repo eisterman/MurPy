@@ -1,4 +1,4 @@
-from abc import ABC,abstractmethod
+from abc import ABC,abstractmethod,abstractproperty
 from _internalobjects import StackObj
 from _interfaceobjects import InterfaceObj
 
@@ -71,6 +71,48 @@ class SetOp(MemOp): # Operazione di set
         else:
             code += ">" * (target - p)
         targetval = self._obj.getValue()
-        code += '[-]' #Azzeramento variabile
+        code += '[-]' # Azzeramento variabile
         code += "+" * targetval
         return (code, target)
+
+# New Operations
+class newOperation(ABC):
+    def __init__(self):
+        self._stackalloc = 0
+        self._regused = 0
+    @property
+    def StackAlloc(self):
+        return self._stackalloc
+    @property
+    def RegUsed(self):
+        return self._regused
+    @abstractmethod
+    def PreCompile(self, env): # TODO: Decidere cosa cazzo deve ritornare il precompile
+        pass
+    @abstractmethod
+    def GetCode(self, env): #TODO: Argomenti speciali per GetCode, magari usando un item EnvState (?)
+        return ""
+
+#TODO: creare un sistema per la memorizzazione tipizzata
+class NewStaticOp(newOperation):
+    def __init__(self, ID, value):
+        super().__init__()
+        self._id = ID
+        self._value = value
+    def PreCompile(self, env):
+        if self._id in env.StackObject.keys():
+            raise "Duplicated Creation!"
+        else:
+            env.StackObject[self._id] = StackObj(self._value, self._byte)
+    def GetCode(self, env):
+        # CASO SPECIALE UN BYTE:
+        # TODO: Estensione a multipli Byte
+        code = ""
+        target = int(list(env.StackObject).index(self._id))
+        if p > target:
+            code += "<" * (p - target)
+        else:
+            code += ">" * (target - p)
+        code += "+" * self._value
+        return (code, target)
+

@@ -11,7 +11,7 @@ class StackObj(MemObj): # Oggetto rappresentate variabile statica in Stack
     #TODO: Getter
 
 class RegObj(MemObj): # Oggetto rappresentante i registri temporanei
-    pass #TODO: Preparare l'infrastruttura per la memorizzazione delle registryOperation
+    pass #TODO: Mi serve?
 
 class HeapOnbj(MemObj): # Oggetto rappresentante variabile dinamica in Heap
     pass
