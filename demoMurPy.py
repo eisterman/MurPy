@@ -1,6 +1,6 @@
-from MurPy import Environment,OperationManager,Compiler,Byte
 from MurPy import Environment
-from _interfaceobjects import var,put
+from _interfaceobjects import var, put
+
 
 def main():
     var("ciao", 5)
