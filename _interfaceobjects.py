@@ -1,19 +1,29 @@
-from abc import ABC,abstractmethod
+from abc import ABC
+from _operations import NewStaticOp, ChangeStaticValueOp
 
-class InterfaceObj(ABC): # Oggetti di interfaccia con l'esterno
-    @abstractmethod
-    def getValue(self):
-        pass
-    @abstractmethod
-    def getByte(self):
-        pass
 
-class Byte(InterfaceObj):
-    def __init__(self,value):
-        self._val = int(value)
-        self._byte = 1
-        #TODO: Value Handling
-    def getByte(self):
-        return self._byte
-    def getValue(self):
-        return self._val
+# Nuovi Metodi di Interfaccia
+# TODO: Porting in funzione semplice con buffer esterno ç_ç fai leva su protezione modulo
+class InterfaceObj(ABC):
+    # C'è da overloaddare __init__ per creare InterfaceObj
+    buffer = []
+
+    @classmethod
+    def GetBuffer(cls):
+        tmp = cls.buffer
+        cls.buffer = []
+        return tmp
+
+
+class var(InterfaceObj):
+    def __init__(self, name, value):  # TODO: Typecoding
+        # PER ORA SOLO VALORI NUMERICI PURI
+        # TODO: Controllo per i Typecode
+        op = NewStaticOp(name, value)
+        self.buffer.append(op)
+
+
+class put(InterfaceObj):
+    def __init__(self, name, value):
+        op = ChangeStaticValueOp(name, value)
+        self.buffer.append(op)
