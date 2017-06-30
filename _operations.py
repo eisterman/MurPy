@@ -115,3 +115,24 @@ class NewStaticOp(newOperation):
         code += "+" * self._value
         return (code, target)
 
+class ChangeStaticValueOp(newOperation):
+    def __init__(self, ID, value):
+        super().__init__()
+        # TODO: Assert the world
+        self._id = ID  # Id Bersaglio
+        self._value = value  # Valore da ficcare nel Berdaglio
+    def PreCompile(self, env):
+        if not self._id in env.StackObject: #TODO: Heap support
+            raise Exception("Variabile non definita")
+    def GetCode(self, env, p):
+        code = ""
+        target = int(list(env.StackObject).index(self._id))
+        env.StackObject[self._id] = StackObj(self._value)  # Per tenere traccia
+        if p > target:
+            code += "<" * (p - target)
+        else:
+            code += ">" * (target - p)
+        targetval = self._value
+        code += '[-]'  # Azzeramento variabile
+        code += "+" * targetval
+        return (code, target)

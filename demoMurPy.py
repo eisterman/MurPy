@@ -1,6 +1,6 @@
 from MurPy import Environment,OperationManager,Compiler,Byte
 from MurPy import newEnvironment
-from _interfaceobjects import protovar
+from _interfaceobjects import protovar,protoset
 
 def testmain():
     executor = Environment()
@@ -17,6 +17,8 @@ def testmain():
 def main():
     protovar("ciao",5)
     protovar("ciao2",2)
+    protovar("ciao3",1)
+    protoset("ciao",3)
 
 if __name__ == '__main__':
     #testmain()
