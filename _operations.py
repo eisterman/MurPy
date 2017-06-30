@@ -1,6 +1,5 @@
-from abc import ABC,abstractmethod,abstractproperty
+from abc import ABC,abstractmethod
 from _internalobjects import StackObj
-from _interfaceobjects import InterfaceObj
 
 class Operation(ABC): # Operazione eseguibile e compilabile in BF
     @abstractmethod
@@ -16,7 +15,7 @@ class VarOp(Operation): # Operazione di creazione di una nuova istanza STATICA
         self._byte = obj.getByte()
     def preComp(self, env): #Può modificare lo stato del compilatore!
         if self._id in env.StackObject.keys():
-            raise "Duplicated Creation!"
+            raise Exception("Duplicated Creation!")
         else:
             env.StackObject[self._id] = StackObj(self._value, self._byte)
     def compute(self,env,p):
@@ -45,7 +44,7 @@ class SumOp(MathOp):
         self._second = second
     def preComp(self,env):
         if not self._target in env.StackObject:
-            raise "Variabile bersaglio non in Stack"
+            raise Exception("Variabile bersaglio non in Stack")
         else:
             pass
 
@@ -60,7 +59,7 @@ class SetOp(MemOp): # Operazione di set
         self._obj = obj # Valore da ficcare nel Berdaglio
     def preComp(self, env):
         if not self._id in env.StackObject: #TODO: Heap support
-            raise "Variabile non definita"
+            raise Exception("Variabile non definita")
     def compute(self,env, p: int):
         code = ""
         target = int(list(env.StackObject).index(self._id))
@@ -90,7 +89,7 @@ class newOperation(ABC):
     def PreCompile(self, env): # TODO: Decidere cosa cazzo deve ritornare il precompile
         pass
     @abstractmethod
-    def GetCode(self, env): #TODO: Argomenti speciali per GetCode, magari usando un item EnvState (?)
+    def GetCode(self, env, p): #TODO: Argomenti speciali per GetCode, magari usando un item EnvState (?)
         return ""
 
 #TODO: creare un sistema per la memorizzazione tipizzata
@@ -101,10 +100,10 @@ class NewStaticOp(newOperation):
         self._value = value
     def PreCompile(self, env):
         if self._id in env.StackObject.keys():
-            raise "Duplicated Creation!"
+            raise Exception("Duplicated Creation!")
         else:
-            env.StackObject[self._id] = StackObj(self._value, self._byte)
-    def GetCode(self, env):
+            env.StackObject[self._id] = StackObj(self._value)
+    def GetCode(self, env, p):
         # CASO SPECIALE UN BYTE:
         # TODO: Estensione a multipli Byte
         code = ""

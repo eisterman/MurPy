@@ -1,5 +1,5 @@
 from abc import ABC,abstractmethod
-from _operations import newOperation
+from _operations import newOperation,NewStaticOp
 
 class InterfaceObj(ABC): # Oggetti di interfaccia con l'esterno
     @abstractmethod
@@ -20,20 +20,23 @@ class Byte(InterfaceObj):
         return self._val
 
 # Nuovi Metodi di Interfaccia
+# TODO: Porting in funzione semplice con buffer esterno ç_ç fai leva su protezione modulo
 class newInterfaceObj(ABC):
     buffer = []
+    @abstractmethod
+    def __init__(self, *args, **kwargs):
+        """Devi passargli tutti i parametri del comando di interfaccia."""
+        pass
     @classmethod
     def getBuffer(cls):
         tmp = cls.buffer
         cls.buffer = []
         return tmp
-    @abstractmethod
-    def __call__(self, *args, **kwargs):
-        """Devi passargli tutti i parametri del comando di interfaccia."""
-        pass
+
 
 class protovar(newInterfaceObj):
-    def __call__(self, name, value, typecode='ub'): #TODO: Typecoding
+    def __init__(self, name, value, typecode='ub'): #TODO: Typecoding
         # PER ORA SOLO VALORI NUMERICI PURI
         # TODO: Controllo per i Typecode
-        pass
+        op = NewStaticOp(name,value)
+        self.buffer.append(op)
