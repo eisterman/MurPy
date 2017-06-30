@@ -1,6 +1,8 @@
 from MurPy import Environment,OperationManager,Compiler,Byte
+from MurPy import newEnvironment
+from _interfaceobjects import protovar
 
-def main():
+def testmain():
     executor = Environment()
     helper = OperationManager(executor)
     helper.newStatic("ciao",Byte(5))
@@ -12,4 +14,15 @@ def main():
     code = comp.compile()
     print(code)
 
-if __name__ == '__main__': main()
+def main():
+    protovar("ciao",5)
+    protovar("ciao2",2)
+
+if __name__ == '__main__':
+    #testmain()
+    env = newEnvironment()
+    env.addRoutine(main)
+    env.Parse()
+    env.Precompile()
+    env.Compile()
+    print(env.Code)
