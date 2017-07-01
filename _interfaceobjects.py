@@ -1,5 +1,5 @@
 from abc import ABC
-from _operations import NewStaticOp, ChangeStaticValueOp
+from _operations import NewStaticOp, ChangeStaticValueOp, AdditionOp, RegToStackOp, NestedOp
 
 
 # Nuovi Metodi di Interfaccia
@@ -15,7 +15,7 @@ class InterfaceObj(ABC):
         return tmp
 
 
-class var(InterfaceObj):
+class VAR(InterfaceObj):
     def __init__(self, name, value):  # TODO: Typecoding
         # PER ORA SOLO VALORI NUMERICI PURI
         # TODO: Controllo per i Typecode
@@ -23,7 +23,26 @@ class var(InterfaceObj):
         self.buffer.append(op)
 
 
-class put(InterfaceObj):
+class SET(InterfaceObj):
     def __init__(self, name, value):
-        op = ChangeStaticValueOp(name, value)
-        self.buffer.append(op)
+        if isinstance(value, NestedInterfaceObj):  # TODO: Potrei usare una NestedInterfaceObj
+            oplist = [value.getOp(), RegToStackOp(name)]
+            op = NestedOp(oplist)
+            self.buffer.append(op)
+        else:
+            op = ChangeStaticValueOp(name, value)
+            self.buffer.append(op)
+
+
+class NestedInterfaceObj(ABC):
+    def __init__(self):
+        self._OPERATION = None
+
+    def getOp(self):
+        return self._OPERATION
+
+
+class ADD(InterfaceObj, NestedInterfaceObj):
+    def __init__(self, name1, name2):
+        super().__init__()
+        self._OPERATION = AdditionOp(name1, name2)
