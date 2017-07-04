@@ -21,10 +21,10 @@ class StackObj(MemObj):  # Oggetto rappresentate variabile statica in Stack
         :param value: Value of the Stack Object. Unused at now.
         :param byte: Number of bytes allocated from the object.
         """
-        self._value = value
-        self._byte = byte
-        # TODO: Error handling
-    # TODO: Getter
+        assert byte >= 1
+        self._value = int(value)
+        self._byte = int(byte)
+    # TODO: Getter (?)
 
 
 class RegObj(MemObj):  # Oggetto rappresentante i registri temporanei
@@ -40,9 +40,10 @@ class RegObj(MemObj):  # Oggetto rappresentante i registri temporanei
         :param reserved: Status of the Registry. Is at now the registry used from one operation?
         :param byte: Number of bytes allocated from the object.
         """
-        self._value = value
-        self._reserved = reserved
-        self._byte = byte
+        assert byte >= 1
+        self._value = int(value)
+        self._reserved = bool(reserved)
+        self._byte = int(byte)
 
     @property
     def ReserveBit(self):
