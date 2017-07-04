@@ -1,4 +1,4 @@
-from MurPy import Environment
+from _environment import Environment
 from _interfaceobjects import VAR, SET, ADD
 
 
