@@ -26,13 +26,13 @@ def brainfuck (source):
         opcode = source[ptr]
         if   opcode == '>': cell += 1
         elif opcode == '<': cell -= 1
-        elif opcode == '+': tape[cell] += 1
-        elif opcode == '-': tape[cell] -= 1
+        elif opcode == '+': tape[cell] = (tape[cell] + 1) % 256
+        elif opcode == '-': tape[cell] = (tape[cell] - 1) % 256
         elif opcode == ',': tape[cell] = ord(sys.stdin.read(1))
         elif opcode == '.': sys.stdout.write(chr(tape[cell]))
         elif (opcode == '[' and not tape[cell]) or \
              (opcode == ']' and tape[cell]): ptr = loop_ptrs[ptr]
         ptr += 1
-
-if __name__ == "__main__":
-    brainfuck()
+    # Output
+    buffer = tuple( tape[i] for i in range(len(tape)) )
+    return buffer

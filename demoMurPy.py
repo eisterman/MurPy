@@ -1,5 +1,6 @@
 from _environment import Environment
 from _interfaceobjects import VAR, SET, ADD, SUB
+from BFVM import brainfuck
 
 
 def main():
@@ -22,3 +23,5 @@ if __name__ == '__main__':
     env.Compile()
     with open('out.bf', 'w') as file:
         file.write(env.BFCode)
+    print("Tape: {}".format(brainfuck(env.BFCode)[:10]))
+    print("Number of Instruction: {}".format(len(env.BFCode)))
