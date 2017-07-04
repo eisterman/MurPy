@@ -1,5 +1,6 @@
 from abc import ABC
-from _operations import NewStaticOp, ChangeStaticValueOp, AdditionOp, RegToStackOp, NestedOp
+from _operations import NewStaticOp, ChangeStaticValueOp, RegToStackOp, NestedOp
+from _mathoperations import AdditionOp, SubtractionOp
 
 
 class InterfaceObj(ABC):
@@ -39,10 +40,11 @@ class NestedInterfaceObj(ABC):
         return self._OPERATION
 
 
+# TODO: Supporto alle Nested Interfaces
 class VAR(InterfaceObj):
     """
     This command will create a new variable in the stack.
-    To implement the Nested Support.
+    This command can take as value a NestedInterfaceObj SubClass.
     """
     def __init__(self, name, value):  # TODO: Typecoding
         """
@@ -93,3 +95,20 @@ class ADD(InterfaceObj, NestedInterfaceObj):
         """
         super().__init__()
         self._OPERATION = AdditionOp(name1, name2)
+
+
+class SUB(InterfaceObj, NestedInterfaceObj):
+    """
+    This command will subtract two variable using a Registry as output.
+    The algorithm is classical progressive subtraction.
+    This command is a NestedInterfaceObj.
+    """
+    def __init__(self, name1, name2):
+        """
+        This command will sum two variable using a Registry as output.
+        This command is a NestedInterfaceObj.
+        :param name1: First member
+        :param name2: Second member
+        """
+        super().__init__()
+        self._OPERATION = SubtractionOp(name1, name2)

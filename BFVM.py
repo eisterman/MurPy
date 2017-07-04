@@ -2,9 +2,11 @@
 import sys
 from collections import defaultdict
 
+
+# TODO: Ricostruire te a manina bellina
 def brainfuck (source):
     source = str(source)
-    #TODO: Controllo contenuto nel Source
+    # TODO: Controllo contenuto nel Source
     loop_ptrs = {}
     loop_stack = []
     for ptr, opcode in enumerate(source):
@@ -32,4 +34,5 @@ def brainfuck (source):
              (opcode == ']' and tape[cell]): ptr = loop_ptrs[ptr]
         ptr += 1
 
-if __name__ == "__main__": brainfuck()
+if __name__ == "__main__":
+    brainfuck()
