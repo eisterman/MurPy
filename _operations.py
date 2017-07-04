@@ -26,7 +26,7 @@ class NestedOperation(ABC):
 
 
 # TODO: creare un sistema per la memorizzazione tipizzata
-class NewStaticOp(Operation):
+class NewStaticOp(Operation, NestedOperation):
     def __init__(self, name, value):
         super().__init__()
         self._name = name

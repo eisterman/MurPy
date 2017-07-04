@@ -3,7 +3,7 @@ from _interfaceobjects import VAR, SET, ADD, SUB
 from BFVM import brainfuck
 
 
-def main():
+def main_old():
     VAR("A", 5)
     VAR("B", 2)
     VAR("C", 1)
@@ -14,6 +14,14 @@ def main():
     SET("D", SUB("C", "B"))
     SET("E", SUB("B", "C"))
     # 3 2 5 3 253
+
+
+def main():
+    VAR("A", 5)
+    VAR("B", 2)
+    VAR("C", ADD("A", "B"))
+    VAR("D", 2)
+    # 5 2 7 2
 
 if __name__ == '__main__':
     env = Environment()
