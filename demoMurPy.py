@@ -23,5 +23,7 @@ if __name__ == '__main__':
     env.Compile()
     with open('out.bf', 'w') as file:
         file.write(env.BFCode)
-    print("Tape: {}".format(brainfuck(env.BFCode)[:10]))
-    print("Number of Instruction: {}".format(len(env.BFCode)))
+    tape, runned = brainfuck(env.BFCode)
+    print(f"Tape: {tape}")
+    print("Number of instruction: {}".format(len(env.BFCode)))
+    print(f"Number of cycles: {runned}")

@@ -22,6 +22,7 @@ def brainfuck (source):
     tape = defaultdict(int)
     cell = 0
     ptr = 0
+    runned = 0
     while ptr < len(source):
         opcode = source[ptr]
         if   opcode == '>': cell += 1
@@ -33,6 +34,7 @@ def brainfuck (source):
         elif (opcode == '[' and not tape[cell]) or \
              (opcode == ']' and tape[cell]): ptr = loop_ptrs[ptr]
         ptr += 1
+        runned += 1
     # Output
     buffer = tuple( tape[i] for i in range(len(tape)) )
-    return buffer
+    return buffer, runned
