@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from _internalobjects import StackObj
+# TODO: Documentazione
 
 
 class Operation(ABC):
