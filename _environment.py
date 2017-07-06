@@ -25,18 +25,18 @@ class Environment:
         self.RegistryColl[regkey] = item
         return regkey, item
 
-    def getRegPosition(self, regkey):
+    def getRegPosition(self, regkey: int):
         """
         Given a regkey return the Tape Position of the associated registry.
         :param regkey: Identity Key fo the registry.
         :return: Tape Position of the registry.
         """
-        # TODO: Assert the world
+        assert isinstance(regkey, int)
         keys = list(self.RegistryColl.keys())
         return len(self.StackObject) + keys.index(regkey)
 
     @staticmethod
-    def MoveP(start, end):
+    def MoveP(start: int, end: int):
         """
         Autogenerate the BFCode for the pointer moving from a
         position to another.
@@ -44,16 +44,18 @@ class Environment:
         :param end: Position of end.
         :return: The BFCode of the movement.
         """
+        assert isinstance(start, int) and isinstance(end, int)
         if start > end:
             return "<" * (start - end)
         else:
             return ">" * (end - start)
 
-    def addRoutine(self, func):
+    def addRoutine(self, func: function):
         """
         Introduce in the Routine Dictionary the specified routine.
         :param func: The Routine to put in the Routine Dictionary.
         """
+        assert isinstance(func,function)
         self.RoutineDict[func.__name__] = func
 
     def Parse(self):
