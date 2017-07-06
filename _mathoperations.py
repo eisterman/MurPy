@@ -48,8 +48,7 @@ class AdditionOp(MathOp):
         code = ""
         A = int(list(env.StackObject).index(self._name1))
         B = int(list(env.StackObject).index(self._name2))
-        R1 = env.getRegPosition(tuple(self._choosedreg.keys())[0])
-        R2 = env.getRegPosition(tuple(self._choosedreg.keys())[1])
+        R1, R2 = env.getRegPosition(self._choosedreg.keys())
         code += env.MoveP(p, A)
         code += "[-" + env.MoveP(A, R1) + "+" + env.MoveP(R1, R2) + "+" + env.MoveP(R2, A) + "]"
         code += env.MoveP(A, R2)
@@ -70,8 +69,7 @@ class SubtractionOp(MathOp):
         code = ""
         A = int(list(env.StackObject).index(self._name1))
         B = int(list(env.StackObject).index(self._name2))
-        R1 = env.getRegPosition(tuple(self._choosedreg.keys())[0])
-        R2 = env.getRegPosition(tuple(self._choosedreg.keys())[1])
+        R1, R2 = env.getRegPosition(self._choosedreg.keys())
         code += env.MoveP(p, A)
         code += "[-" + env.MoveP(A, R1) + "+" + env.MoveP(R1, R2) + "+" + env.MoveP(R2, A) + "]"
         code += env.MoveP(A, R2)
@@ -82,3 +80,15 @@ class SubtractionOp(MathOp):
         code += "[-" + env.MoveP(R2, B) + "+" + env.MoveP(B, R2) + "]"
         code += env.MoveP(R2, R1)
         return code, R1
+
+
+class MultiplicationOp(MathOp):
+    def __init__(self, name1, name2):
+        super().__init__(name1, name2, 3, [True, False, False])
+
+    def GetCode(self, env, p):
+        code = ""
+        A = int(list(env.StackObject).index(self._name1))
+        B = int(list(env.StackObject).index(self._name2))
+        R1, R2, R3 = env.getRegPosition(self._choosedreg.keys())
+

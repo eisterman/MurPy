@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from collections import OrderedDict, Iterable
 from _internalobjects import RegObj
 from _interfaceobjects import InterfaceObj
 
@@ -25,15 +25,19 @@ class Environment:
         self.RegistryColl[regkey] = item
         return regkey, item
 
-    def getRegPosition(self, regkey: int):
+    def getRegPosition(self, regkey):
         """
         Given a regkey return the Tape Position of the associated registry.
-        :param regkey: Identity Key fo the registry.
-        :return: Tape Position of the registry.
+        :param regkey: Identity Key fo the registry or a list of it.
+        :return: Tape Position of the registry or a tuple of it.
         """
-        assert isinstance(regkey, int)
         keys = list(self.RegistryColl.keys())
-        return len(self.StackObject) + keys.index(regkey)
+        if not isinstance(regkey, Iterable):
+            work = int(regkey)
+            return len(self.StackObject) + keys.index(work)
+        else:
+            work = tuple(regkey)
+            return tuple(len(self.StackObject) + keys.index(rkey) for rkey in work)
 
     @staticmethod
     def MoveP(start: int, end: int):
@@ -44,18 +48,17 @@ class Environment:
         :param end: Position of end.
         :return: The BFCode of the movement.
         """
-        assert isinstance(start, int) and isinstance(end, int)
         if start > end:
             return "<" * (start - end)
         else:
             return ">" * (end - start)
 
-    def addRoutine(self, func: function):
+    def addRoutine(self, func):
         """
         Introduce in the Routine Dictionary the specified routine.
         :param func: The Routine to put in the Routine Dictionary.
         """
-        assert isinstance(func,function)
+        # TODO: Assert func as Function Type
         self.RoutineDict[func.__name__] = func
 
     def Parse(self):
