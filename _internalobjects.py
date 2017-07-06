@@ -24,7 +24,6 @@ class StackObj(MemObj):  # Oggetto rappresentate variabile statica in Stack
         assert byte >= 1
         self._value = int(value)
         self._byte = int(byte)
-    # TODO: Getter (?)
 
 
 class RegObj(MemObj):  # Oggetto rappresentante i registri temporanei
