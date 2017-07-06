@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\fpasqua\PycharmProjects\MurPy\.idea\BFPyCompiler.iml" filepath="C:\Users\fpasqua\PycharmProjects\MurPy\.idea\BFPyCompiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/MurPy.iml" filepath="$PROJECT_DIR$/.idea/MurPy.iml" />
     </modules>
   </component>
