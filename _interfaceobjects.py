@@ -40,14 +40,12 @@ class NestedInterfaceObj(ABC):
         return self._OPERATION
 
 
-# TODO: Rimuovere duplicati self.buffer
 class VAR(InterfaceObj):
     """
     This command will create a new variable in the stack.
     This command can take as value a NestedInterfaceObj SubClass.
     """
-    # TODO: Default Value
-    def __init__(self, name, value):  # TODO: Typecoding
+    def __init__(self, name, value=0):  # TODO: Typecoding
         """
         This command will create a new variable in the stack.
         :param name: Name of the new variable
@@ -57,10 +55,9 @@ class VAR(InterfaceObj):
         if isinstance(value, NestedInterfaceObj):
             oplist = [NewStaticOp(name, 0), value.getOp(), RegToStackOp(name)]
             op = NestedOp(oplist)
-            self.buffer.append(op)
         else:
             op = NewStaticOp(name, value)
-            self.buffer.append(op)
+        self.buffer.append(op)
 
 
 class SET(InterfaceObj):
@@ -69,7 +66,7 @@ class SET(InterfaceObj):
     in the stack.
     This command can take as value a NestedInterfaceObj SubClass.
     """
-    def __init__(self, name, value):
+    def __init__(self, name, value = 0):
         """
         This command will edit the value into a already existing variable
         in the stack.
@@ -80,10 +77,9 @@ class SET(InterfaceObj):
         if isinstance(value, NestedInterfaceObj):
             oplist = [value.getOp(), RegToStackOp(name)]
             op = NestedOp(oplist)
-            self.buffer.append(op)
         else:
             op = ChangeStaticValueOp(name, value)
-            self.buffer.append(op)
+        self.buffer.append(op)
 
 
 class ADD(InterfaceObj, NestedInterfaceObj):
