@@ -1,6 +1,6 @@
 from abc import ABC
 from _operations import NewStaticOp, ChangeStaticValueOp, RegToStackOp, NestedOp
-from _mathoperations import AdditionOp, SubtractionOp
+from _mathoperations import AdditionOp, SubtractionOp, MultiplicationOp
 
 
 class InterfaceObj(ABC):
@@ -113,3 +113,21 @@ class SUB(InterfaceObj, NestedInterfaceObj):
         """
         super().__init__()
         self._OPERATION = SubtractionOp(name1, name2)
+
+
+class MUL(InterfaceObj, NestedInterfaceObj):
+    """
+    This command will multiply two variable using a Registry as output.
+    The algorithm use heavily the registry for the operations.
+    This command is a NestedInterfaceObj.
+    """
+    def __init__(self, name1, name2):
+        """
+        This command will multiply two variable using a Registry as output.
+        The algorithm use heavily the registry for the operations.
+        This command is a NestedInterfaceObj.
+        :param name1: First member
+        :param name2: Second member
+        """
+        super().__init__()
+        self._OPERATION = MultiplicationOp(name1, name2)

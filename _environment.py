@@ -37,7 +37,7 @@ class Environment:
             return len(self.StackObject) + keys.index(work)
         else:
             work = tuple(regkey)
-            return tuple(len(self.StackObject) + keys.index(rkey) for rkey in work)
+            return tuple((len(self.StackObject) + keys.index(rkey)) for rkey in work)
 
     @staticmethod
     def MoveP(start: int, end: int):
