@@ -1,46 +1,8 @@
-from abc import abstractmethod
-from collections import OrderedDict
-from _operations import Operation, NestedOperation
+from _operations import OperatorOperation
 # TODO: Documentazione
 
 
-class MathOp(Operation, NestedOperation):
-    def __init__(self, name1, name2, nreg, reservebits, exitreg):
-        super().__init__()
-        self._name1 = name1
-        self._name2 = name2
-        self._nreg = nreg  # Numero di registri
-        self._exitreg = int(exitreg)  # Registro d'uscita (numerazione interna 0,1,2,...)
-        self._reservebits = reservebits  # Bit di riserva post operazione
-        self._choosedreg = OrderedDict()
-
-    def PreCompile(self, env):  # TODO: Somma Nestata
-        if self._name1 not in env.StackObject:
-            raise Exception("Variabile non definita")
-        if self._name2 not in env.StackObject:
-            raise Exception("Variabile non definita")
-        # Registry
-        choosedreg = self._choosedreg
-        nreg = self._nreg
-        for regKey, regObj in env.RegistryColl.items():
-            if not regObj.ReserveBit and len(choosedreg) < nreg:
-                choosedreg[regKey] = regObj
-            elif len(choosedreg) == nreg:
-                break
-        while len(choosedreg) < nreg:
-            regkey, regobj = env.RequestRegistry()
-            choosedreg[regkey] = regobj
-        vals = list(choosedreg.values())
-        for i in range(len(vals)):
-            vals[i].ReserveBit = self._reservebits[i]
-        self._OREGKEY = tuple(choosedreg.keys())[self._exitreg]
-
-    @abstractmethod
-    def GetCode(self, env, p):
-        pass
-
-
-class AdditionOp(MathOp):
+class AdditionOp(OperatorOperation):
     def __init__(self, name1, name2):
         super().__init__(name1, name2, 2, [True, False], 0)
 
@@ -62,7 +24,7 @@ class AdditionOp(MathOp):
         return code, R1
 
 
-class SubtractionOp(MathOp):
+class SubtractionOp(OperatorOperation):
     def __init__(self, name1, name2):
         super().__init__(name1, name2, 2, [True, False], 0)
 
@@ -83,7 +45,7 @@ class SubtractionOp(MathOp):
         return code, R1
 
 
-class MultiplicationOp(MathOp):
+class MultiplicationOp(OperatorOperation):
     # TODO: Algoritmo speciale per i negativi (parametri di precompilazione per diverse BFVM)
     def __init__(self, name1, name2):
         # Prendo 4 registri per avere una pesante ottimizzazione per il tapeshift.
