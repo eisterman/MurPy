@@ -118,4 +118,5 @@ class MultiplicationOp(MathOp):
         code += env.MoveP(R3, R1)
         # Fine Loop interno
         code += "]"
+        # TODO: PULIRE REGISTRO R4 CHE RESTA SPORCO DOPO L'OPERAZIONE!!!!!
         return code, R1
