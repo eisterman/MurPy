@@ -67,6 +67,7 @@ class Environment:
         After that all the PseudoCode will be generated into the Environment.
         """
         # MODELLO PER UNA SOLA FUNZIONE MAIN
+        # TODO: Le IF interfaccia sono separate bla bla, ma in OP sono un unica op a buffer diverso
         self.RoutineDict["main"]()
         self.PseudoCode = InterfaceObj.GetBuffer()
 
