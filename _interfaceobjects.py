@@ -1,6 +1,7 @@
 from abc import ABC
 from _operations import NewStaticOp, ChangeStaticValueOp, RegToStackOp, NestedOp
 from _mathoperations import AdditionOp, SubtractionOp, MultiplicationOp
+from _compareoperations import EqualOp
 
 
 class InterfaceObj(ABC):
@@ -131,3 +132,10 @@ class MUL(InterfaceObj, NestedInterfaceObj):
         """
         super().__init__()
         self._OPERATION = MultiplicationOp(name1, name2)
+
+
+class EQ(InterfaceObj, NestedInterfaceObj):
+    # TODO: DOCUMENTAZIONE EQ
+    def __init__(self, name1, name2):
+        super().__init__()
+        self._OPERATION = EqualOp(name1, name2)
