@@ -13,6 +13,7 @@ class Operation(ABC):
         return ""
 
 
+# TODO: Renderlo figlio di Operation con un unico INIT (?)
 class NestedOperation(ABC):
     def __init__(self):
         self._IREGKEY = None
