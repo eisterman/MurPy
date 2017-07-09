@@ -1,8 +1,10 @@
 from abc import ABC
 from _operations import NewStaticOp, ChangeStaticValueOp, RegToStackOp, CopyStackToRegOp, NestedOp
 from _mathoperations import AdditionOp, SubtractionOp, MultiplicationOp
+from _controlflowoperations import IFConditionOp
 
 
+# TODO: Sposta tutte le statiche in ENVIRONMENT o in una classe apposta.
 class InterfaceObj(ABC):
     """
     Abstract Base Class for the Interface Object. This contain the
@@ -13,33 +15,51 @@ class InterfaceObj(ABC):
     # C'è da overloaddare __init__ per creare InterfaceObj
     buffers = {0: []}
     buffer = 0
+    indentindex = []
 
-    @classmethod
-    def AddPseudoCode(cls, pcode):
-        cls.buffers[cls.buffer].append(pcode)
+    @staticmethod
+    def AddPseudoCode(pcode):
+        InterfaceObj.buffers[InterfaceObj.buffer].append(pcode)
 
-    @classmethod
-    def IndendtBuffer(cls):
-        cls.buffer += 1
-        cls.buffers[cls.buffer] = []
+    @staticmethod
+    def IndendtBuffer():
+        InterfaceObj.buffer += 1
+        InterfaceObj.buffers[InterfaceObj.buffer] = []
 
-    @classmethod
-    def DeIndentBuffer(cls):
-        if cls.buffer == 0:
+    @staticmethod
+    def DeIndentBuffer():
+        if InterfaceObj.buffer == 0:
             raise Exception("You can't deindent more.")
-        cls.buffer -= 1
-        cls.buffers[cls.buffer] += cls.buffers[cls.buffer + 1]
-        del cls.buffers[cls.buffer + 1]
+        InterfaceObj.buffer -= 1
+        tmp = InterfaceObj.buffers[InterfaceObj.buffer + 1]
+        del InterfaceObj.buffers[InterfaceObj.buffer + 1]
+        return tmp
 
-    @classmethod
-    def GetMainBuffer(cls):
+    @staticmethod
+    def GetMainBuffer():
         """
         Will return the shared buffer of all the InterfaceObj subclasses.
         :return: The InterfaceObj Buffer
         """
-        tmp = cls.buffers[0]
-        cls.buffers[0] = []
+        tmp = InterfaceObj.buffers[0]
+        InterfaceObj.buffers[0] = []
         return tmp
+
+    @staticmethod
+    def RefBuffer(nref=buffer):
+        return InterfaceObj.buffers[nref]
+
+    @staticmethod
+    def TrackIfIndex(index):
+        InterfaceObj.indentindex.append(index)
+
+    @staticmethod
+    def GetIfIndex():
+        return InterfaceObj.indentindex[-1]
+
+    @staticmethod
+    def PopIfIndex():
+        return InterfaceObj.indentindex.pop()
 
 
 class NestedInterfaceObj(ABC):
@@ -153,4 +173,29 @@ class MUL(InterfaceObj, NestedInterfaceObj):
 
 class IF(InterfaceObj):
     def __init__(self, condition):
-        pass
+        preludeops = []
+        if isinstance(condition, str):
+            preludeops.append(CopyStackToRegOp(condition))
+        elif isinstance(condition, NestedInterfaceObj):
+            preludeops.append(condition.getOp())
+        else:
+            raise Exception("IF can take only variable or NestedInterfaceObj")
+        preludeops.append(IFConditionOp())
+        self.TrackIfIndex(len(self.RefBuffer()))
+        self.AddPseudoCode(NestedOp(preludeops))
+        self.IndendtBuffer()
+
+
+class ELSE(InterfaceObj):
+    def __init__(self):
+        outif = self.DeIndentBuffer()
+        refbuffer = self.RefBuffer()
+        refbuffer[self.GetIfIndex()].RefLastOp().SetOpList(outif)
+        self.IndendtBuffer()
+
+
+class ENDIF(InterfaceObj):
+    def __init__(self):
+        outif = self.DeIndentBuffer()
+        refbuffer = self.RefBuffer()
+        refbuffer[self.PopIfIndex()].RefLastOp().SetOpList(outif)

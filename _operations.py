@@ -14,6 +14,7 @@ class Operation(ABC):
         return ""
 
 
+# TODO: Dividere in InNestedOperation e OutNestedOperation o comunque un interfaccia personalizzata
 class NestedOperation(ABC):
     def __init__(self):
         self._IREGKEY = None
@@ -50,8 +51,8 @@ class OperatorOperation(Operation, NestedOperation):
             elif len(choosedreg) == nreg:
                 break
         while len(choosedreg) < nreg:
-            regkey, regobj = env.RequestRegistry()
-            choosedreg[regkey] = regobj
+            regKey, regObj = env.RequestRegistry()
+            choosedreg[regKey] = regObj
         # Ref Power
         for i, obj in enumerate(choosedreg.values()):
             obj.ReserveBit = self._reservebits[i]
@@ -158,22 +159,25 @@ class CopyStackToRegOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
 
     def GetCode(self, env, p):
         code = ""
-        start = int(list(env.StackObject).index(self._stackname))
-        target = env.getRegPosition(list(self._targetreg.keys())[0])
-        temp = env.getRegPosition(list(self._targetreg.keys())[1])
-        code += env.MoveP(p, target)
+        A = int(list(env.StackObject).index(self._stackname))
+        R1 = env.getRegPosition(list(self._targetreg.keys())[0])
+        R2 = env.getRegPosition(list(self._targetreg.keys())[1])
+        code += env.MoveP(p, R1)
         code += "[-]"
-        code += env.MoveP(target, start)
-        code += "[-" + env.MoveP(start, target) + "+" + env.MoveP(target, temp) + "+"
-        code += env.MoveP(temp, start) + "]"
-        code += env.MoveP(start, temp)
-        code += "[-" + env.MoveP(temp, start) + "+" + env.MoveP(start, temp) + "]"
-        return code, temp
+        code += env.MoveP(R1, A)
+        code += "[-" + env.MoveP(A, R1) + "+" + env.MoveP(R1, R2) + "+"
+        code += env.MoveP(R2, A) + "]"
+        code += env.MoveP(A, R2)
+        code += "[-" + env.MoveP(R2, A) + "+" + env.MoveP(A, R2) + "]"
+        return code, R2
 
 
 class NestedOp(Operation):  # Risolutore e contenitore di operazioni multiple (per ora protocollo RegKey)
     def __init__(self, oplist):
         self._oplist = oplist
+
+    def RefLastOp(self):
+        return self._oplist[-1]
 
     def PreCompile(self, env):
         regbuffer = None

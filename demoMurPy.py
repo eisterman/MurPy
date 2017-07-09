@@ -1,28 +1,27 @@
 from _environment import Environment
-from _interfaceobjects import VAR, SET, ADD, SUB, MUL
+from _interfaceobjects import VAR, SET, ADD, SUB, MUL, IF, ELSE, ENDIF
 from BFVM import brainfuck
 
 
 def main_old():
     VAR("A", 5)
     VAR("B", 2)
-    VAR("C", 1)
-    SET("A", 3)
-    SET("C", ADD("A", "B"))
-    VAR("D", 2)
-    VAR("E", 5)
-    SET("D", SUB("C", "B"))
-    SET("E", SUB("B", "C"))
-    # 3 2 5 3 253
+    VAR("C", ADD("A", "B"))
+    VAR("D", SUB("A", "B"))
+    VAR("E", MUL("A", "B"))
+    # 5 2 3 2 10 (reg 0 0 0 2)
 
 
 def main():
     VAR("A", 5)
-    VAR("B", 2)
-    VAR("C", ADD("A", "B"))
-    VAR("D", 2)
-    VAR("E", MUL("A", "B"))
-    # 5 2 7 2 10 (reg 0 0 0 2)
+    VAR("B", 0)
+    IF("A")
+    SET("B", 4)
+    ELSE()
+    SET("B", 1)
+    ENDIF()
+    VAR("C", 3)
+    # 5 4 3
 
 if __name__ == '__main__':
     env = Environment()
