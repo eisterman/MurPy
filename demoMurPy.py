@@ -1,5 +1,5 @@
 from _environment import Environment
-from _interfaceobjects import VAR, SET, ADD, SUB, MUL, EQ
+from _interfaceobjects import VAR, SET, ADD, SUB, MUL, EQ, NEQ
 from BFVM import brainfuck
 
 
@@ -22,9 +22,11 @@ def main():
     VAR("C", ADD("A", "B"))
     VAR("D", 2)
     VAR("E", MUL("A", "B"))
-    VAR("OUT1", EQ("B", "C"))
-    VAR("OUT2", EQ("B", "D"))
-    # 5 2 7 2 10 | 1 0
+    VAR("OUT1", NEQ("B", "C"))
+    VAR("OUT2", NEQ("B", "D"))
+    VAR("OUT3", EQ("B", "C"))
+    VAR("OUT4", EQ("B", "D"))
+    # 5 2 7 2 10 | 0 1 0 1
 
 if __name__ == '__main__':
     env = Environment()
