@@ -56,3 +56,16 @@ class NotEqualOp(OperatorOperation):
         code += env.MoveP(R3, R2)
         code += "[" + env.MoveP(R2, R1) + "+" + env.MoveP(R1, R2) + "[-]]"
         return code, R2
+
+
+class GreaterOp(OperatorOperation):
+    def __init__(self, name1, name2):
+        super().__init__(name1, name2, 3, [True, False, False], 0)
+
+    def GetCode(self, env, p):
+        code = ""
+        A = int(list(env.StackObject).index(self._name1))
+        B = int(list(env.StackObject).index(self._name2))
+        R1, R2, R3 = env.getRegPosition(self._choosedreg.keys())
+        # Begin Operation
+        # TODO: Farlo io e rivederlo
