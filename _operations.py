@@ -138,9 +138,8 @@ class CopyStackToRegOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
         self._targetreg = {}
 
     def PreCompile(self, env):
-        if self._stackname not in env.StackObject:  # TODO: Heap support & Assert the World
+        if self._stackname not in env.StackObject:
             raise Exception("Variabile non definita")
-
         reservedreg = self._targetreg
         nreg = 2
         for regKey, regObj in env.RegistryColl.items():

@@ -1,5 +1,5 @@
 from abc import ABC
-from _operations import NewStaticOp, ChangeStaticValueOp, RegToStackOp, NestedOp
+from _operations import NewStaticOp, ChangeStaticValueOp, RegToStackOp, CopyStackToRegOp, NestedOp
 from _mathoperations import AdditionOp, SubtractionOp, MultiplicationOp
 
 
@@ -11,16 +11,34 @@ class InterfaceObj(ABC):
     the compilation, use with caution.
     """
     # C'è da overloaddare __init__ per creare InterfaceObj
-    buffer = []
+    buffers = {0: []}
+    buffer = 0
 
     @classmethod
-    def GetBuffer(cls):
+    def AddPseudoCode(cls, pcode):
+        cls.buffers[cls.buffer].append(pcode)
+
+    @classmethod
+    def IndendtBuffer(cls):
+        cls.buffer += 1
+        cls.buffers[cls.buffer] = []
+
+    @classmethod
+    def DeIndentBuffer(cls):
+        if cls.buffer == 0:
+            raise Exception("You can't deindent more.")
+        cls.buffer -= 1
+        cls.buffers[cls.buffer] += cls.buffers[cls.buffer + 1]
+        del cls.buffers[cls.buffer + 1]
+
+    @classmethod
+    def GetMainBuffer(cls):
         """
         Will return the shared buffer of all the InterfaceObj subclasses.
         :return: The InterfaceObj Buffer
         """
-        tmp = cls.buffer
-        cls.buffer = []
+        tmp = cls.buffers[0]
+        cls.buffers[0] = []
         return tmp
 
 
@@ -57,7 +75,7 @@ class VAR(InterfaceObj):
             op = NestedOp(oplist)
         else:
             op = NewStaticOp(name, value)
-        self.buffer.append(op)
+        self.AddPseudoCode(op)
 
 
 class SET(InterfaceObj):
@@ -66,7 +84,7 @@ class SET(InterfaceObj):
     in the stack.
     This command can take as value a NestedInterfaceObj SubClass.
     """
-    def __init__(self, name, value = 0):
+    def __init__(self, name, value=0):
         """
         This command will edit the value into a already existing variable
         in the stack.
@@ -79,7 +97,7 @@ class SET(InterfaceObj):
             op = NestedOp(oplist)
         else:
             op = ChangeStaticValueOp(name, value)
-        self.buffer.append(op)
+        self.AddPseudoCode(op)
 
 
 class ADD(InterfaceObj, NestedInterfaceObj):
@@ -131,3 +149,8 @@ class MUL(InterfaceObj, NestedInterfaceObj):
         """
         super().__init__()
         self._OPERATION = MultiplicationOp(name1, name2)
+
+
+class IF(InterfaceObj):
+    def __init__(self, condition):
+        pass
