@@ -52,9 +52,9 @@ class OperatorOperation(Operation, NestedOperation):
         while len(choosedreg) < nreg:
             regkey, regobj = env.RequestRegistry()
             choosedreg[regkey] = regobj
-        vals = list(choosedreg.values())
-        for i in range(len(vals)):
-            vals[i].ReserveBit = self._reservebits[i]
+        # Ref Power
+        for i, obj in enumerate(choosedreg.values()):
+            obj.ReserveBit = self._reservebits[i]
         self._OREGKEY = tuple(choosedreg.keys())[self._exitreg]
 
     @abstractmethod
@@ -129,6 +129,47 @@ class RegToStackOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
         code += env.MoveP(target, start)
         code += "[-" + env.MoveP(start, target) + "+" + env.MoveP(target, start) + "]"
         return code, start
+
+
+class CopyStackToRegOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
+    def __init__(self, stackname):
+        super().__init__()
+        self._stackname = stackname
+        self._targetreg = {}
+
+    def PreCompile(self, env):
+        if self._stackname not in env.StackObject:  # TODO: Heap support & Assert the World
+            raise Exception("Variabile non definita")
+
+        reservedreg = self._targetreg
+        nreg = 2
+        for regKey, regObj in env.RegistryColl.items():
+            if not regObj.ReserveBit and len(reservedreg) < nreg:
+                reservedreg[regKey] = regObj
+            elif len(reservedreg) == nreg:
+                break
+        while len(reservedreg) < nreg:
+            regKey, regObj = env.RequestRegistry()
+            reservedreg[regKey] = regObj
+        # Ref Power
+        vals = list(reservedreg.values())
+        vals[0].ReserveBit = True
+        vals[1].ReserveBit = False
+        self._OREGKEY = tuple(reservedreg.keys())[0]
+
+    def GetCode(self, env, p):
+        code = ""
+        start = int(list(env.StackObject).index(self._stackname))
+        target = env.getRegPosition(list(self._targetreg.keys())[0])
+        temp = env.getRegPosition(list(self._targetreg.keys())[1])
+        code += env.MoveP(p, target)
+        code += "[-]"
+        code += env.MoveP(target, start)
+        code += "[-" + env.MoveP(start, target) + "+" + env.MoveP(target, temp) + "+"
+        code += env.MoveP(temp, start) + "]"
+        code += env.MoveP(start, temp)
+        code += "[-" + env.MoveP(temp, start) + "+" + env.MoveP(start, temp) + "]"
+        return code, temp
 
 
 class NestedOp(Operation):  # Risolutore e contenitore di operazioni multiple (per ora protocollo RegKey)
