@@ -96,7 +96,6 @@ class RegToStackOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
 
 class NestedOp(Operation):  # Risolutore e contenitore di operazioni multiple (per ora protocollo RegKey)
     def __init__(self, oplist):
-        super().__init__()
         self._oplist = oplist
 
     def PreCompile(self, env):
