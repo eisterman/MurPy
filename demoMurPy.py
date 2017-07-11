@@ -16,12 +16,16 @@ def main():
     VAR("A", 5)
     VAR("B", 0)
     IF("A")
+    IF("B")
     SET("B", 4)
+    ELSE()
+    SET("A", 1)
+    ENDIF()
     ELSE()
     SET("B", 1)
     ENDIF()
     VAR("C", 3)
-    # 5 4 3
+    # 1 0 3 | reg
 
 if __name__ == '__main__':
     env = Environment()

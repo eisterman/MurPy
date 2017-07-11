@@ -12,7 +12,7 @@ class BufferManager:
     def AddPseudoCode(self, pcode):
         self.buffers[self.buffer].append(pcode)
 
-    def IndendtBuffer(self):
+    def IndentBuffer(self):
         self.buffer += 1
         self.buffers[self.buffer] = []
 
@@ -33,8 +33,8 @@ class BufferManager:
         self.buffers[0] = []
         return tmp
 
-    def RefBuffer(self, nref=buffer):
-        return self.buffers[nref]
+    def RefBuffer(self):
+        return self.buffers[self.buffer]
 
     def TrackIfIndex(self, index):
         self.indentindex.append(index)
@@ -181,7 +181,7 @@ class IF(InterfaceObj):
         preludeops.append(IFConditionOp())
         BUFFER.TrackIfIndex(len(BUFFER.RefBuffer()))
         BUFFER.AddPseudoCode(NestedOp(preludeops))
-        BUFFER.IndendtBuffer()
+        BUFFER.IndentBuffer()
 
 
 class ELSE(InterfaceObj):
@@ -189,7 +189,7 @@ class ELSE(InterfaceObj):
         outif = BUFFER.DeIndentBuffer()
         refbuffer = BUFFER.RefBuffer()
         refbuffer[BUFFER.GetIfIndex()].RefLastOp().SetOpList(outif)
-        BUFFER.IndendtBuffer()
+        BUFFER.IndentBuffer()
 
 
 class ENDIF(InterfaceObj):
