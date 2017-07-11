@@ -69,7 +69,9 @@ class Environment:
         # MODELLO PER UNA SOLA FUNZIONE MAIN
         # TODO: Le IF interfaccia sono separate bla bla, ma in OP sono un unica op a buffer diverso
         self.RoutineDict["main"]()
-        self.PseudoCode = InterfaceObj.GetMainBuffer()
+        # Proteggo il BUFFER da import non voluti
+        from _interfaceobjects import BUFFER
+        self.PseudoCode = BUFFER.GetMainBuffer()
 
     def Precompile(self):
         """
