@@ -46,9 +46,6 @@ class BufferManager:
         return self.indentindex.pop()
 
 
-BUFFER = BufferManager()  # TODO: Find a better way to manage the BUFFER
-
-
 class InterfaceObj(ABC):
     """
     Abstract Base Class for the Interface Object. This contain the
@@ -56,8 +53,7 @@ class InterfaceObj(ABC):
     operations producted by there. This buffer list is a trick for
     the compilation, use with caution.
     """
-    # C'è da overloaddare __init__ per creare InterfaceObj
-    pass
+    BUFFER = BufferManager()
 
 
 class NestedInterfaceObj(ABC):
@@ -93,7 +89,7 @@ class VAR(InterfaceObj):
             op = NestedOp(oplist)
         else:
             op = NewStaticOp(name, value)
-        BUFFER.AddPseudoCode(op)
+        self.BUFFER.AddPseudoCode(op)
 
 
 class SET(InterfaceObj):
@@ -115,7 +111,7 @@ class SET(InterfaceObj):
             op = NestedOp(oplist)
         else:
             op = ChangeStaticValueOp(name, value)
-        BUFFER.AddPseudoCode(op)
+        self.BUFFER.AddPseudoCode(op)
 
 
 class ADD(InterfaceObj, NestedInterfaceObj):
@@ -179,21 +175,21 @@ class IF(InterfaceObj):
         else:
             raise Exception("IF can take only variable or NestedInterfaceObj")
         preludeops.append(IFConditionOp())
-        BUFFER.TrackIfIndex(len(BUFFER.RefBuffer()))
-        BUFFER.AddPseudoCode(NestedOp(preludeops))
-        BUFFER.IndentBuffer()
+        self.BUFFER.TrackIfIndex(len(self.BUFFER.RefBuffer()))
+        self.BUFFER.AddPseudoCode(NestedOp(preludeops))
+        self.BUFFER.IndentBuffer()
 
 
 class ELSE(InterfaceObj):
     def __init__(self):
-        outif = BUFFER.DeIndentBuffer()
-        refbuffer = BUFFER.RefBuffer()
-        refbuffer[BUFFER.GetIfIndex()].RefLastOp().SetOpList(outif)
-        BUFFER.IndentBuffer()
+        outif = self.BUFFER.DeIndentBuffer()
+        refbuffer = self.BUFFER.RefBuffer()
+        refbuffer[self.BUFFER.GetIfIndex()].RefLastOp().SetOpList(outif)
+        self.BUFFER.IndentBuffer()
 
 
 class ENDIF(InterfaceObj):
     def __init__(self):
-        outif = BUFFER.DeIndentBuffer()
-        refbuffer = BUFFER.RefBuffer()
-        refbuffer[BUFFER.PopIfIndex()].RefLastOp().SetOpList(outif)
+        outif = self.BUFFER.DeIndentBuffer()
+        refbuffer = self.BUFFER.RefBuffer()
+        refbuffer[self.BUFFER.PopIfIndex()].RefLastOp().SetOpList(outif)
