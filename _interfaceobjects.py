@@ -2,6 +2,7 @@ from abc import ABC
 from _operations import NewStaticOp, ChangeStaticValueOp, RegToStackOp, CopyStackToRegOp, NestedOp
 from _mathoperations import AdditionOp, SubtractionOp, MultiplicationOp
 from _controlflowoperations import IFConditionOp
+from _compareoperations import EqualOp, NotEqualOp
 
 
 class BufferManager:
@@ -163,6 +164,20 @@ class MUL(InterfaceObj, NestedInterfaceObj):
         """
         super().__init__()
         self._OPERATION = MultiplicationOp(name1, name2)
+
+
+class EQ(InterfaceObj, NestedInterfaceObj):
+    # TODO: DOCUMENTAZIONE EQ
+    def __init__(self, name1, name2):
+        super().__init__()
+        self._OPERATION = EqualOp(name1, name2)
+
+
+class NEQ(InterfaceObj, NestedInterfaceObj):
+    # TODO: DoCUMENTAZIONE NEQ
+    def __init__(self, name1, name2):
+        super().__init__()
+        self._OPERATION = NotEqualOp(name1, name2)
 
 
 class IF(InterfaceObj):
