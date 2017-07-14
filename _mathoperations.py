@@ -80,4 +80,6 @@ class MultiplicationOp(OperatorOperation):
         code += env.MoveP(R3, R1)
         # Fine Loop interno
         code += "]"
-        return code, R1
+        # CLEANUP
+        code += "[-]" + env.MoveP(R1, R3) + "[-]" + env.MoveP(R3, R4) + "[-]"
+        return code, R4

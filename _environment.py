@@ -53,6 +53,9 @@ class Environment:
         else:
             return ">" * (end - start)
 
+    def clear(self):
+        self.__init__()
+
     def addRoutine(self, func):
         """
         Introduce in the Routine Dictionary the specified routine.
