@@ -1,6 +1,6 @@
 from collections import OrderedDict, Iterable
 from _internalobjects import RegObj
-from _interfaceobjects import InterfaceObj
+from _commands import InterfaceObj
 
 
 class Environment:
@@ -53,6 +53,18 @@ class Environment:
         else:
             return ">" * (end - start)
 
+    @staticmethod
+    def ClearRegList(startpos: int, reglist: tuple):
+        code = ""
+        pointer = int(startpos)
+        for reg in reglist:
+            code += Environment.MoveP(pointer, reg) + "[-]"
+            pointer = reg
+        return code, pointer
+
+    def clear(self):
+        self.__init__()
+
     def addRoutine(self, func):
         """
         Introduce in the Routine Dictionary the specified routine.
@@ -67,8 +79,10 @@ class Environment:
         After that all the PseudoCode will be generated into the Environment.
         """
         # MODELLO PER UNA SOLA FUNZIONE MAIN
+        # TODO: Le IF interfaccia sono separate bla bla, ma in OP sono un unica op a buffer diverso
         self.RoutineDict["main"]()
-        self.PseudoCode = InterfaceObj.GetBuffer()
+        # Proteggo il BUFFER da import non voluti
+        self.PseudoCode = InterfaceObj.BUFFER.GetMainBuffer()
 
     def Precompile(self):
         """
