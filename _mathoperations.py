@@ -81,5 +81,7 @@ class MultiplicationOp(OperatorOperation):
         # Fine Loop interno
         code += "]"
         # CLEANUP
-        code += "[-]" + env.MoveP(R1, R3) + "[-]" + env.MoveP(R3, R4) + "[-]"
-        return code, R4
+        clrcode, ptr = env.ClearRegList(R1, (R1, R3, R4))
+        code += clrcode
+        # code += "[-]" + env.MoveP(R1, R3) + "[-]" + env.MoveP(R3, R4) + "[-]"
+        return code, ptr

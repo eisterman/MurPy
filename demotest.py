@@ -79,6 +79,24 @@ class MyTestCase(unittest.TestCase):
         tape = self.EnvCode(main)[1]
         self.assertEqual(tape, (5, 3, 0, 1, 0, 0, 0))
 
+    def test_DoubleIFELSEVar(self):
+        def main():
+            VAR("A", 5)
+            VAR("B", 0)
+            IF("A")
+            IF("B")
+            SET("B", 4)
+            ELSE()
+            SET("A", 1)
+            ENDIF()
+            ELSE()
+            SET("B", 1)
+            ENDIF()
+            VAR("C", 3)
+        tape = self.EnvCode(main)[1]
+        self.assertEqual(tape, (1, 0, 3, 0, 0, 0, 0, 0, 0))
+        # TODO: Controllare quantità di registri alloccati almeno una volta
+
     def tearDown(self):
         self.env = None
 

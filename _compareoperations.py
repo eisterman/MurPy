@@ -55,7 +55,10 @@ class NotEqualOp(OperatorOperation):
         # Hot Topic
         code += env.MoveP(R3, R2)
         code += "[" + env.MoveP(R2, R1) + "+" + env.MoveP(R1, R2) + "[-]]"
-        return code, R2
+        # CLEANUP
+        clrcode, ptr = env.ClearRegList(R2, (R2, R3))
+        code += clrcode
+        return code, ptr
 
 
 class GreaterOp(OperatorOperation):

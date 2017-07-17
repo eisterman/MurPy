@@ -53,6 +53,15 @@ class Environment:
         else:
             return ">" * (end - start)
 
+    @staticmethod
+    def ClearRegList(startpos: int, reglist: tuple):
+        code = ""
+        pointer = int(startpos)
+        for reg in reglist:
+            code += Environment.MoveP(pointer, reg) + "[-]"
+            pointer = reg
+        return code, pointer
+
     def clear(self):
         self.__init__()
 

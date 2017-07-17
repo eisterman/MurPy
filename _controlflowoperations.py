@@ -75,4 +75,7 @@ class IFConditionOp(Operation, NestedOperation):
                 pointer = newpointer
         # FINE CODICE DUE
         code += env.MoveP(pointer, R1) + "-]"
-        return code, R1
+        # CLEANUP
+        clrcode, ptr = env.ClearRegList(R1, (RCOND, R1, R2))
+        code += clrcode
+        return code, ptr
