@@ -5,13 +5,40 @@ from _internalobjects import StackObj
 
 
 class Operation(ABC):
+    """
+    Abstract Base Class for all the Operation subclasses.
+    The Operations are the core of the transpiler engine, they contain
+    all the information of a single "instruction" of the code.
+    The Operation is paragonable at a single line of Pseudocode.
+    """
     @abstractmethod
     def PreCompile(self, env):  # TODO: Decidere cosa cazzo deve ritornare il precompile
+        """
+        Procedure for prepare the Environment for the successive compilation.
+
+        Example of operation to do in PreCompile:
+        - Check existance of precise objects in Stack
+        - Ask for registries to Environment
+        - Set ReserveBit for the registries in use
+        - Put in and out additional information
+        - Everything is needed to prepare the Operation for compiletime
+
+        :param env: Environment of operation
+        :return: Nothing
+        """
         pass
 
     @abstractmethod
     def GetCode(self, env, p):  # TODO: Argomenti speciali per GetCode, magari usando un item EnvState (?)
-        return ""
+        """
+        Procedure for the generation of the Brainfuck Code by the Environment
+
+        :param env: Environment of operation
+        :param p: Pointer of starting for the BFCode generation procedure
+        :return: (Code, Pointer): A tuple containing the generated Code and
+            the position of the pointer at the termination of the BFCode
+        """
+        return "", 0
 
 
 # TODO: Dividere in InNestedOperation e OutNestedOperation o comunque un interfaccia personalizzata
