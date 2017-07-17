@@ -1,5 +1,5 @@
 from _environment import Environment
-from _interfaceobjects import VAR, SET, ADD, SUB, MUL, IF, ELSE, ENDIF
+from _commands import VAR, SET, ADD, SUB, MUL, IF, ELSE, ENDIF
 from BFVM import brainfuck
 
 

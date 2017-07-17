@@ -1,5 +1,6 @@
 from abc import ABC
-from _operations import NewStaticOp, ChangeStaticValueOp, RegToStackOp, CopyStackToRegOp, NestedOp
+from _operations import NestedOp
+from _memoryoperations import NewStaticOp, ChangeStaticValueOp, RegToStackOp, CopyStackToRegOp
 from _mathoperations import AdditionOp, SubtractionOp, MultiplicationOp
 from _controlflowoperations import IFConditionOp
 from _compareoperations import EqualOp, NotEqualOp
