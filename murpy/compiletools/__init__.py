@@ -1,6 +1,6 @@
 from collections import OrderedDict, Iterable
-from _internalobjects import RegObj
-from _commands import InterfaceObj
+from ..commands import InterfaceObj
+from ..core.objects.memory import RegObj
 
 
 class Environment:

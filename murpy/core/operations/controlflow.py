@@ -1,4 +1,4 @@
-from _operations import Operation, NestedOperation
+from . import Operation, NestedOperation
 
 
 class IFConditionOp(Operation, NestedOperation):

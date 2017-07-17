@@ -1,5 +1,6 @@
-from _operations import Operation, NestedOperation
-from _internalobjects import StackObj
+from . import Operation, NestedOperation
+
+from ..objects.memory import StackObj
 
 
 # TODO: creare un sistema per la memorizzazione tipizzata

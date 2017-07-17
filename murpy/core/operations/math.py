@@ -1,4 +1,4 @@
-from _operations import OperatorOperation
+from . import OperatorOperation
 # TODO: Documentazione
 
 
