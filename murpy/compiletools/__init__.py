@@ -70,7 +70,9 @@ class Environment:
         Introduce in the Routine Dictionary the specified routine.
         :param func: The Routine to put in the Routine Dictionary.
         """
-        # TODO: Assert func as Function Type
+        # Per essere certi che l'input sia una funzione
+        assert callable(func)
+        assert hasattr(func, "__name__")
         self.RoutineDict[func.__name__] = func
 
     def Parse(self):
@@ -79,9 +81,8 @@ class Environment:
         After that all the PseudoCode will be generated into the Environment.
         """
         # MODELLO PER UNA SOLA FUNZIONE MAIN
-        # TODO: Le IF interfaccia sono separate bla bla, ma in OP sono un unica op a buffer diverso
+        # TODO: Estendere il parser in modo dinamica a casi multifunzione
         self.RoutineDict["main"]()
-        # Proteggo il BUFFER da import non voluti
         self.PseudoCode = InterfaceObj.BUFFER.GetMainBuffer()
 
     def Precompile(self):

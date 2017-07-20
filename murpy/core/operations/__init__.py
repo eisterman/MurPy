@@ -11,7 +11,7 @@ class Operation(ABC):
     The Operation is paragonable at a single line of Pseudocode.
     """
     @abstractmethod
-    def PreCompile(self, env):  # TODO: Decidere cosa cazzo deve ritornare il precompile
+    def PreCompile(self, env):  # TODO: Precompilation Flags
         """
         Procedure for prepare the Environment for the successive compilation.
 
@@ -28,7 +28,7 @@ class Operation(ABC):
         pass
 
     @abstractmethod
-    def GetCode(self, env, p):  # TODO: Argomenti speciali per GetCode, magari usando un item EnvState (?)
+    def GetCode(self, env, p):  # TODO: Compilation flags, magari usando un item EnvState (?)
         """
         Procedure for the generation of the Brainfuck Code by the Environment
 
@@ -40,7 +40,8 @@ class Operation(ABC):
         return "", 0
 
 
-# TODO: Dividere in InNestedOperation e OutNestedOperation o comunque un interfaccia personalizzata
+# TODO: Creare interfacce personalizzate per avere un più valido RegKeyStream tra NestedOperation
+# TODO: Dividiere il concetto di NestedOperation da quello di utente del RegKeyStream
 class NestedOperation(ABC):
     def __init__(self):
         self._IREGKEY = None
