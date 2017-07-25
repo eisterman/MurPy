@@ -1,7 +1,7 @@
-from . import Operation, NestedOperation
+from . import Operation, INestedOperation
 
 
-class IFConditionOp(Operation, NestedOperation):
+class IFConditionOp(Operation, INestedOperation):
     def __init__(self):
         super().__init__()
         self._condregkey = None

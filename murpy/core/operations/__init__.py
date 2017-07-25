@@ -42,16 +42,26 @@ class Operation(ABC):
 
 # TODO: Creare interfacce personalizzate per avere un più valido RegKeyStream tra NestedOperation
 # TODO: Dividiere il concetto di NestedOperation da quello di utente del RegKeyStream
-class NestedOperation(ABC):
+class INestedOperation(ABC):
     def __init__(self):
         self._IREGKEY = None
-        self._OREGKEY = None
 
     def InputRegKey(self, key):
         self._IREGKEY = key
 
+
+class ONestedOperation(ABC):
+    def __init__(self):
+        self._OREGKEY = None
+
     def OutputRegKey(self):
         return self._OREGKEY
+
+
+class NestedOperation(INestedOperation, ONestedOperation):
+    def __init__(self):
+        INestedOperation.__init__(self)
+        ONestedOperation.__init__(self)
 
 
 class OperatorOperation(Operation, NestedOperation):
@@ -64,7 +74,7 @@ class OperatorOperation(Operation, NestedOperation):
         self._reservebits = reservebits  # Bit di riserva post operazione
         self._choosedreg = OrderedDict()
 
-    def PreCompile(self, env):  # TODO: Somma Nestata
+    def PreCompile(self, env):  # TODO: Somma Nestata (uso della IREGKEY)
         if self._name1 not in env.StackObject:
             raise Exception("Variabile non definita")
         if self._name2 not in env.StackObject:

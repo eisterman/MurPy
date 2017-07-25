@@ -4,6 +4,7 @@ from ..objects.memory import StackObj
 
 
 # TODO: creare un sistema per la memorizzazione tipizzata
+# TODO: Inserire output regkey
 class NewStaticOp(Operation, NestedOperation):
     def __init__(self, name, value):
         super().__init__()
@@ -51,6 +52,7 @@ class ChangeStaticValueOp(Operation):
         return code, target
 
 
+# TODO: Implement OREGKEY per i memory in realtà
 class RegToStackOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
     def __init__(self, stackname):
         super().__init__()
@@ -72,6 +74,7 @@ class RegToStackOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
         return code, start
 
 
+# TODO: Passa
 class CopyStackToRegOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
     def __init__(self, stackname):
         super().__init__()
