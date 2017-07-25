@@ -1,13 +1,14 @@
 from . import Operation, INestedOperation
+from ..objects.memory import RegObj
 
 
 class IFConditionOp(Operation, INestedOperation):
     def __init__(self):
         super().__init__()
-        self._condregkey = None
+        self._condmemobj = None
         self._oplisttrue = None
         self._oplistfalse = None
-        self._choosedreg = {}
+        self._choosedreg = []
 
     def SetOpList(self, lista):
         # TODO: Proteggi il mondo
@@ -19,22 +20,23 @@ class IFConditionOp(Operation, INestedOperation):
             raise Exception("Setted OpList of IfConditionOp more than two times.")
 
     def PreCompile(self, env):
-        self._condregkey = self._IREGKEY
+        self._condmemobj = self._IMEMOBJ
         # Registri
         choosedreg = self._choosedreg
         nreg = 2
-        for regKey, regObj in env.RegistryColl.items():
-            if not regObj.ReserveBit and len(choosedreg) < nreg:
-                choosedreg[regKey] = regObj
+        for regobj in env.RegistryColl.values():
+            if not regobj.ReserveBit and len(choosedreg) < nreg:
+                choosedreg.append(regobj)
             elif len(choosedreg) == nreg:
                 break
         while len(choosedreg) < nreg:
-            regkey, regobj = env.RequestRegistry()
-            choosedreg[regkey] = regobj
+            regobj = env.RequestRegistry()
+            choosedreg.append(regobj)
         # Allocate Registry
-        for obj in choosedreg.values():
+        for obj in choosedreg:
             obj.ReserveBit = True
-        env.RegistryColl[self._condregkey].ReserveBit = True
+        if isinstance(self._condmemobj, RegObj):
+            self._condmemobj.ReserveBit = True
         # Precompile Nested
         if self._oplisttrue is not None and len(self._oplisttrue) > 0:
             for op in self._oplisttrue:
@@ -43,14 +45,15 @@ class IFConditionOp(Operation, INestedOperation):
             for op in self._oplistfalse:
                 op.PreCompile(env)
         # Deallocate Registry
-        for obj in choosedreg.values():
+        for obj in choosedreg:
             obj.ReserveBit = False
-        env.RegistryColl[self._condregkey].ReserveBit = False
+        if isinstance(self._condmemobj, RegObj):
+            self._condmemobj.ReserveBit = False
 
     def GetCode(self, env, p):
         code = ""
-        RCOND = env.getRegPosition(self._condregkey)
-        R1, R2 = env.getRegPosition(self._choosedreg.keys())
+        RCOND = env.getRegPosition(self._condmemobj)
+        R1, R2 = env.getRegPosition(self._choosedreg)
         # Start Code
         code += env.MoveP(p, R1) + "[-]+" + env.MoveP(R1, R2) + "[-]" + env.MoveP(R2, RCOND)
         code += "["

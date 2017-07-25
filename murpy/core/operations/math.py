@@ -11,7 +11,7 @@ class AdditionOp(OperatorOperation):
         code = ""
         A = int(list(env.StackObject).index(self._name1))
         B = int(list(env.StackObject).index(self._name2))
-        R1, R2 = env.getRegPosition(self._choosedreg.keys())
+        R1, R2 = env.getRegPosition(self._choosedreg)
         code += env.MoveP(p, A)
         code += "[-" + env.MoveP(A, R1) + "+" + env.MoveP(R1, R2) + "+" + env.MoveP(R2, A) + "]"
         code += env.MoveP(A, R2)
@@ -32,7 +32,7 @@ class SubtractionOp(OperatorOperation):
         code = ""
         A = int(list(env.StackObject).index(self._name1))
         B = int(list(env.StackObject).index(self._name2))
-        R1, R2 = env.getRegPosition(self._choosedreg.keys())
+        R1, R2 = env.getRegPosition(self._choosedreg)
         code += env.MoveP(p, A)
         code += "[-" + env.MoveP(A, R1) + "+" + env.MoveP(R1, R2) + "+" + env.MoveP(R2, A) + "]"
         code += env.MoveP(A, R2)
@@ -55,7 +55,7 @@ class MultiplicationOp(OperatorOperation):
         code = ""
         A = int(list(env.StackObject).index(self._name1))
         B = int(list(env.StackObject).index(self._name2))
-        R1, R2, R3, R4 = env.getRegPosition(self._choosedreg.keys())
+        R1, R2, R3, R4 = env.getRegPosition(self._choosedreg)
         code += env.MoveP(p, A)
         # A --> R1, R2
         code += "[-" + env.MoveP(A, R1) + "+" + env.MoveP(R1, R2) + "+" + env.MoveP(R2, A) + "]"

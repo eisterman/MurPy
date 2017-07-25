@@ -9,13 +9,13 @@ class NestedOp(Operation):  # Risolutore e contenitore di operazioni multiple (p
         return self._oplist[-1]
 
     def PreCompile(self, env):
-        regbuffer = None
+        MObuffer = None
         for op in self._oplist:
             if isinstance(op, INestedOperation):
-                op.InputRegKey(regbuffer)
+                op.InputMemObj(MObuffer)
             op.PreCompile(env)
             if isinstance(op, ONestedOperation):
-                regbuffer = op.OutputRegKey()
+                MObuffer = op.OutputMemObj()
 
     def GetCode(self, env, p):
         code = ""

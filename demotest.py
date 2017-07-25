@@ -101,6 +101,8 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(tape, (1, 0, 3, 0, 0, 0, 0, 0, 0))
         # TODO: Controllare quantità di registri alloccati almeno una volta
 
+    # TODO: MORE TEST!!!!!!!
+
     def tearDown(self):
         self.env = None
 

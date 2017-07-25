@@ -18,26 +18,26 @@ class Environment:
     def RequestRegistry(self):
         """
         Request a new registry slot.
-        :return: regkey = Identity Key of the new Reg, item = the new Reg Object.
+        :return: the new Reg Object.
         """
         regkey = len(self.RegistryColl)
         item = RegObj(regkey)
         self.RegistryColl[regkey] = item
-        return regkey, item
+        return item
 
-    def getRegPosition(self, regkey):
+    def getRegPosition(self, regobjs):
         """
         Given a regkey return the Tape Position of the associated registry.
-        :param regkey: Identity Key fo the registry or a list of it.
+        :param regobjs: Identity Object for the registry or a list of it.
         :return: Tape Position of the registry or a tuple of it.
         """
         keys = list(self.RegistryColl.keys())
-        if not isinstance(regkey, Iterable):
-            work = int(regkey)
+        if not isinstance(regobjs, Iterable):
+            work = int(regobjs.regkey)
             return len(self.StackObject) + keys.index(work)
         else:
-            work = tuple(regkey)
-            return tuple((len(self.StackObject) + keys.index(rkey)) for rkey in work)
+            work = tuple(regobjs)
+            return tuple((len(self.StackObject) + keys.index(robj.regkey)) for robj in work)
 
     @staticmethod
     def MoveP(start: int, end: int):
