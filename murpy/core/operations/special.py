@@ -1,4 +1,4 @@
-from . import Operation
+from . import Operation, INestedOperation, ONestedOperation
 
 
 class NestedOp(Operation):  # Risolutore e contenitore di operazioni multiple (per ora protocollo RegKey)
@@ -11,9 +11,11 @@ class NestedOp(Operation):  # Risolutore e contenitore di operazioni multiple (p
     def PreCompile(self, env):
         regbuffer = None
         for op in self._oplist:
-            op.InputRegKey(regbuffer)
+            if isinstance(op, INestedOperation):
+                op.InputRegKey(regbuffer)
             op.PreCompile(env)
-            regbuffer = op.OutputRegKey()
+            if isinstance(op, ONestedOperation):
+                regbuffer = op.OutputRegKey()
 
     def GetCode(self, env, p):
         code = ""

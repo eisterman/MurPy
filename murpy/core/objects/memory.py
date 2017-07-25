@@ -15,15 +15,22 @@ class StackObj(MemObj):  # Oggetto rappresentate variabile statica in Stack
     machine. This will contain all the info about the
     contained data.
     """
-    def __init__(self, value, byte=1):
+    def __init__(self, name, byte=1):
         """
         Build a new StackObj instance.
-        :param value: Value of the Stack Object. Unused at now.
-        :param byte: Number of bytes allocated from the object.
+        :param name: Name of the Stack Object.
+        :param byte: Number of bytes allocated from the object. <UNUSED>
         """
         assert byte >= 1
-        self._value = int(value)
+        self._name = str(name)
         self._byte = int(byte)
+
+    @property
+    def name(self):
+        return self._name
+
+    def __eq__(self, other):
+        return self.name == other.name
 
 
 class RegObj(MemObj):  # Oggetto rappresentante i registri temporanei
@@ -32,17 +39,21 @@ class RegObj(MemObj):  # Oggetto rappresentante i registri temporanei
     the machine stack. This object will contain all the info about
     the registry status and data.
     """
-    def __init__(self, value=0, reserved=True, byte=1):
+    def __init__(self, regkey, reserved=True, byte=1):
         """
         Build a new RegObj instance.
-        :param value: Value of the Registry. Unused at now.
         :param reserved: Status of the Registry. Is at now the registry used from one operation?
         :param byte: Number of bytes allocated from the object.
         """
         assert byte >= 1
-        self._value = int(value)
+        assert regkey is not None
+        self._regkey = regkey
         self._reserved = bool(reserved)
         self._byte = int(byte)
+
+    @property
+    def regkey(self):
+        return self._regkey
 
     @property
     def ReserveBit(self):

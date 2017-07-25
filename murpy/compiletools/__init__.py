@@ -21,7 +21,7 @@ class Environment:
         :return: regkey = Identity Key of the new Reg, item = the new Reg Object.
         """
         regkey = len(self.RegistryColl)
-        item = RegObj()
+        item = RegObj(regkey)
         self.RegistryColl[regkey] = item
         return regkey, item
 
