@@ -1,4 +1,4 @@
-from _operations import OperatorOperation
+from . import OperatorOperation
 
 
 # Prima operatione con Cleanup. Preventivamente antecedente

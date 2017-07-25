@@ -1,8 +1,12 @@
 import unittest
 
-from _environment import Environment
-from _commands import VAR, SET, ADD, SUB, MUL, IF, ELSE, ENDIF
 from BFVM import brainfuck
+
+from murpy.commands.memory.stack import VAR, SET
+from murpy.commands.operators.math import ADD, SUB, MUL
+from murpy.commands.controlflow.IF import IF, ELSE, ENDIF
+
+from murpy.compiletools import Environment
 
 
 class MyTestCase(unittest.TestCase):

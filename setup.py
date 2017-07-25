@@ -2,7 +2,11 @@ from setuptools import setup, find_packages
 
 setup(
     name='murpy',
-    version='0.0.1',
+    # VERSION = MAJOR.MINOR.MAINTENANCE
+    version='0.1.1',
+    # MAJOR version when they make incompatible API changes,
+    # MINOR version when they add functionality in a backwards-compatible manner, and
+    # MAINTENANCE version when they make backwards-compatible bug fixes
     description='A Brainfuck code generator from an own language',
     url='https://github.com/eisterman/MurPy',
     author='eisterman',
@@ -32,4 +36,5 @@ setup(
     keywords='brainfuck-transpiler brainfuck transpiler code-generator language programming-language',
     packages=find_packages(exclude=[]),
     install_requires=[],
+    python_requires='>=3'
 )
