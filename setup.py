@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='murpy',
     # VERSION = MAJOR.MINOR.MAINTENANCE
-    version='0.1.0',
+    version='0.1.1',
     # MAJOR version when they make incompatible API changes,
     # MINOR version when they add functionality in a backwards-compatible manner, and
     # MAINTENANCE version when they make backwards-compatible bug fixes
