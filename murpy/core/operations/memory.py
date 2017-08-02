@@ -1,10 +1,10 @@
-from . import Operation, NestedOperation
+from . import Operation, ONestedOperation, NestedOperation
 
-from ..objects.memory import StackObj
+from ..objects.memory import StackObj, RegObj
 
 
 # TODO: creare un sistema per la memorizzazione tipizzata
-class NewStaticOp(Operation, NestedOperation):
+class NewStaticOp(Operation, ONestedOperation):
     def __init__(self, name, value):
         super().__init__()
         self._name = name
@@ -14,7 +14,10 @@ class NewStaticOp(Operation, NestedOperation):
         if self._name in env.StackObject.keys():
             raise Exception("Duplicated Creation!")
         else:
-            env.StackObject[self._name] = StackObj(self._value)
+            tmp = StackObj(self._name)
+            env.StackObject[self._name] = tmp
+            self._OMEMOBJ = tmp
+            del tmp
 
     def GetCode(self, env, p):
         # CASO SPECIALE UN BYTE:
@@ -40,7 +43,7 @@ class ChangeStaticValueOp(Operation):
     def GetCode(self, env, p):
         code = ""
         target = int(list(env.StackObject).index(self._name))
-        env.StackObject[self._name] = StackObj(self._value)  # Per tenere traccia
+        env.StackObject[self._name] = StackObj(self._name)  # Per tenere traccia
         if p > target:
             code += "<" * (p - target)
         else:
@@ -59,11 +62,14 @@ class RegToStackOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
     def PreCompile(self, env):
         if self._stackname not in env.StackObject:  # TODO: Heap support & Assert the World
             raise Exception("Variabile non definita")
-        env.RegistryColl[self._IREGKEY].ReserveBit = False
+        if not isinstance(self._IMEMOBJ, RegObj):
+            raise Exception("Richiesto RegObj in IMEMOBJ")
+        self._IMEMOBJ.ReserveBit = False
+        self._OMEMOBJ = env.StackObject[self._stackname]
 
     def GetCode(self, env, p):
         code = ""
-        start = env.getRegPosition(self._IREGKEY)
+        start = env.getRegPosition(self._IMEMOBJ)
         target = int(list(env.StackObject).index(self._stackname))
         code += env.MoveP(p, target)
         code += "[-]"
@@ -72,36 +78,35 @@ class RegToStackOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
         return code, start
 
 
-class CopyStackToRegOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
+class CopyStackToRegOp(Operation, ONestedOperation):  # PROTOCOLLO NESTEDOP
     def __init__(self, stackname):
         super().__init__()
         self._stackname = stackname
-        self._targetreg = {}
+        self._targetreg = []
 
     def PreCompile(self, env):
         if self._stackname not in env.StackObject:
             raise Exception("Variabile non definita")
         reservedreg = self._targetreg
         nreg = 2
-        for regKey, regObj in env.RegistryColl.items():
+        for regObj in env.RegistryColl.values():
             if not regObj.ReserveBit and len(reservedreg) < nreg:
-                reservedreg[regKey] = regObj
+                reservedreg.append(regObj)
             elif len(reservedreg) == nreg:
                 break
         while len(reservedreg) < nreg:
-            regKey, regObj = env.RequestRegistry()
-            reservedreg[regKey] = regObj
+            regObj = env.RequestRegistry()
+            reservedreg.append(regObj)
         # Ref Power
-        vals = list(reservedreg.values())
-        vals[0].ReserveBit = True
-        vals[1].ReserveBit = False
-        self._OREGKEY = tuple(reservedreg.keys())[0]
+        self._targetreg[0].ReserveBit = True
+        self._targetreg[1].ReserveBit = False
+        self._OMEMOBJ = reservedreg[0]
 
     def GetCode(self, env, p):
         code = ""
         A = int(list(env.StackObject).index(self._stackname))
-        R1 = env.getRegPosition(list(self._targetreg.keys())[0])
-        R2 = env.getRegPosition(list(self._targetreg.keys())[1])
+        R1 = env.getRegPosition(self._targetreg[0])
+        R2 = env.getRegPosition(self._targetreg[1])
         code += env.MoveP(p, R1)
         code += "[-]"
         code += env.MoveP(R1, A)

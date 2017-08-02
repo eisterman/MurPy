@@ -2,23 +2,41 @@ from abc import ABC
 
 
 class BufferManager:
-    buffers = {0: []}
-    buffer = 0
-    indentindex = []
+    """
+    Object who manage the Operation Buffer common to all the InterfaceObj.
+    With this object the class InterfaceObj manage the parsing of every operation.
+    The object is used also as manager of the indentation in the parsing.
+    """
+    buffers = {0: []}  # BufferGrade: Buffer
+    buffergrade = 0  # Actual/Active BufferGrade
+    indentindex = []  # Indexes used for intendation management
 
     def AddPseudoCode(self, pcode):
-        self.buffers[self.buffer].append(pcode)
+        """
+        Add a Pseudocode Operation at the actual active buffer.
+        :param pcode: Pseudocode Operation
+        :return: None
+        """
+        self.buffers[self.buffergrade].append(pcode)
 
     def IndentBuffer(self):
-        self.buffer += 1
-        self.buffers[self.buffer] = []
+        """
+        Increment the BufferGrade and initialize a new empty buffer.
+        :return: None
+        """
+        self.buffergrade += 1
+        self.buffers[self.buffergrade] = []
 
     def DeIndentBuffer(self):
-        if self.buffer == 0:
+        """
+        Decrement the BufferGrade and pop out the buffer active before.
+        :return: Buffer list
+        """
+        if self.buffergrade == 0:
             raise Exception("You can't deindent more.")
-        self.buffer -= 1
-        tmp = self.buffers[self.buffer + 1]
-        del self.buffers[self.buffer + 1]
+        self.buffergrade -= 1
+        tmp = self.buffers[self.buffergrade + 1]
+        del self.buffers[self.buffergrade + 1]
         return tmp
 
     def GetMainBuffer(self):
@@ -31,15 +49,31 @@ class BufferManager:
         return tmp
 
     def RefBuffer(self):
-        return self.buffers[self.buffer]
+        """
+        Get a reference to the actual buffer activated.
+        :return: Buffer list (reference)
+        """
+        return self.buffers[self.buffergrade]
 
     def TrackIfIndex(self, index):
+        """
+        Track a code indentation index for successive utilization.
+        :param index: Index to store
+        """
         self.indentindex.append(index)
 
     def GetIfIndex(self):
+        """
+        Get the last code indentation index tracked as reference.
+        :return: reference to the last code indentation index
+        """
         return self.indentindex[-1]
 
     def PopIfIndex(self):
+        """
+        Pop (get and remove) the last code indentation index tracked.
+        :return: last code indentation index
+        """
         return self.indentindex.pop()
 
 

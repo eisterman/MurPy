@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from collections import OrderedDict
 # TODO: Documentazione
 
 
@@ -40,18 +39,27 @@ class Operation(ABC):
         return "", 0
 
 
-# TODO: Creare interfacce personalizzate per avere un più valido RegKeyStream tra NestedOperation
-# TODO: Dividiere il concetto di NestedOperation da quello di utente del RegKeyStream
-class NestedOperation(ABC):
+# TODO: Assert the World
+class INestedOperation(ABC):
     def __init__(self):
-        self._IREGKEY = None
-        self._OREGKEY = None
+        self._IMEMOBJ = None
 
-    def InputRegKey(self, key):
-        self._IREGKEY = key
+    def InputMemObj(self, obj):
+        self._IMEMOBJ = obj
 
-    def OutputRegKey(self):
-        return self._OREGKEY
+
+class ONestedOperation(ABC):
+    def __init__(self):
+        self._OMEMOBJ = None
+
+    def OutputMemObj(self):
+        return self._OMEMOBJ
+
+
+class NestedOperation(INestedOperation, ONestedOperation):
+    def __init__(self):
+        INestedOperation.__init__(self)
+        ONestedOperation.__init__(self)
 
 
 class OperatorOperation(Operation, NestedOperation):
@@ -62,9 +70,9 @@ class OperatorOperation(Operation, NestedOperation):
         self._nreg = nreg  # Numero di registri
         self._exitreg = int(exitreg)  # Registro d'uscita (numerazione interna 0,1,2,...)
         self._reservebits = reservebits  # Bit di riserva post operazione
-        self._choosedreg = OrderedDict()
+        self._choosedreg = []
 
-    def PreCompile(self, env):  # TODO: Somma Nestata
+    def PreCompile(self, env):  # TODO: Somma Nestata (uso della IREGKEY)
         if self._name1 not in env.StackObject:
             raise Exception("Variabile non definita")
         if self._name2 not in env.StackObject:
@@ -72,19 +80,20 @@ class OperatorOperation(Operation, NestedOperation):
         # Registry
         choosedreg = self._choosedreg
         nreg = self._nreg
-        for regKey, regObj in env.RegistryColl.items():
-            if not regObj.ReserveBit and len(choosedreg) < nreg:
-                choosedreg[regKey] = regObj
+        for regobj in env.RegistryColl.values():
+            if not regobj.ReserveBit and len(choosedreg) < nreg:
+                choosedreg.append(regobj)
             elif len(choosedreg) == nreg:
                 break
         while len(choosedreg) < nreg:
-            regKey, regObj = env.RequestRegistry()
-            choosedreg[regKey] = regObj
+            regobj = env.RequestRegistry()
+            choosedreg.append(regobj)
         # Ref Power
-        for i, obj in enumerate(choosedreg.values()):
+        for i, obj in enumerate(choosedreg):
             obj.ReserveBit = self._reservebits[i]
-        self._OREGKEY = tuple(choosedreg.keys())[self._exitreg]
+        self._OMEMOBJ = choosedreg[self._exitreg]
 
     @abstractmethod
     def GetCode(self, env, p):
+        # TODO: Implement the head of all the GetCode and so use it later.
         pass
