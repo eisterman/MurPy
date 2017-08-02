@@ -7,11 +7,10 @@
     - [ ] commands/operators
     - [ ] commands/controlflow
     - [ ] compiletools
-    - [ ] Final Tests
+    - [x] Final Tests
+        - [ ] New final tests
 - [ ] Write more complete test case
 - [ ] Test for the cleanness of the registries
-## Pythonicness
-- [ ] Put `__init__.py` contents in other files and import it
 ## Build & Deploy
 - [ ] Port `dist.bat` in a `dist.py` script for build and deploy automation
 - [ ] Full automate deploy with an automatic check of the unittests
@@ -23,6 +22,7 @@
     - [ ] commands/operators/neq
     - [ ] others....
 - [ ] Translate all the doc from Italian to English
+- [ ] New README.md
 ## New Features
 - [ ] Subroutine support
 - [ ] Nested OperatorOperation

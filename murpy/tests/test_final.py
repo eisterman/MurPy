@@ -9,7 +9,7 @@ from murpy.commands.controlflow.IF import IF, ELSE, ENDIF
 from murpy.compiletools import Environment
 
 
-class MyTestCase(unittest.TestCase):
+class FinalTestCase(unittest.TestCase):
     def setUp(self):
         self.env = Environment()
 
