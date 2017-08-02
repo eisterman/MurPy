@@ -54,7 +54,6 @@ class ChangeStaticValueOp(Operation):
         return code, target
 
 
-# TODO: Implement OREGKEY per i memory in realtà
 class RegToStackOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
     def __init__(self, stackname):
         super().__init__()

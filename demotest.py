@@ -14,12 +14,11 @@ class MyTestCase(unittest.TestCase):
         self.env = Environment()
 
     def EnvCode(self, fun):
-        env = self.env
-        env.addRoutine(fun)
-        env.Parse()
-        env.Precompile()
-        env.Compile()
-        code = env.BFCode
+        self.env.addRoutine(fun)
+        self.env.Parse()
+        self.env.Precompile()
+        self.env.Compile()
+        code = self.env.BFCode
         tape, runned = brainfuck(code)
         return code, tape, runned
 
@@ -41,7 +40,7 @@ class MyTestCase(unittest.TestCase):
             VAR("D", ADD("C", "A"))
         tape = self.EnvCode(main)[1]
         # Vi sono ben due registri temporanei
-        self.assertEqual(tape, (7, 2, 1, 8, 0, 0))
+        self.assertEqual(tape[:-2], (7, 2, 1, 8))
 
     def test_SUB(self):
         def main():
@@ -51,7 +50,7 @@ class MyTestCase(unittest.TestCase):
             VAR("C", 1)
             VAR("D", SUB("C", "A"))
         tape = self.EnvCode(main)[1]
-        self.assertEqual(tape, (3, 2, 1, 254, 0, 0))
+        self.assertEqual(tape[:-2], (3, 2, 1, 254))
 
     def test_MUL(self):
         def main():
@@ -66,7 +65,7 @@ class MyTestCase(unittest.TestCase):
             VAR("H", MUL("A", "F"))
             VAR("I", 1)
         tape = self.EnvCode(main)[1]
-        self.assertEqual(tape, (10, 2, 1, 10, 10, 0, 0, 0, 1, 0, 0, 0, 0))
+        self.assertEqual(tape[:-4], (10, 2, 1, 10, 10, 0, 0, 0, 1))
 
     def test_DoubleNotNestedIFVar(self):
         def main():
@@ -81,7 +80,7 @@ class MyTestCase(unittest.TestCase):
             ENDIF()
             VAR("D", 1)
         tape = self.EnvCode(main)[1]
-        self.assertEqual(tape, (5, 3, 0, 1, 0, 0, 0))
+        self.assertEqual(tape[:-3], (5, 3, 0, 1))
 
     def test_DoubleIFELSEVar(self):
         def main():
@@ -98,7 +97,7 @@ class MyTestCase(unittest.TestCase):
             ENDIF()
             VAR("C", 3)
         tape = self.EnvCode(main)[1]
-        self.assertEqual(tape, (1, 0, 3, 0, 0, 0, 0, 0, 0))
+        self.assertEqual(tape[:-6], (1, 0, 3))
         # TODO: Controllare quantità di registri alloccati almeno una volta
 
     # TODO: MORE TEST!!!!!!!
