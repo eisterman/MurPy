@@ -41,6 +41,6 @@ if __name__ == '__main__':
     with open('out.bf', 'w') as file:
         file.write(env.BFCode)
     tape, runned = brainfuck(env.BFCode)
-    print(f"Tape: {tape}")
+    print("Tape: {}".format(tape))
     print("Number of instruction: {}".format(len(env.BFCode)))
-    print(f"Number of cycles: {runned}")
+    print("Number of cycles: {}".format(runned))

@@ -11,7 +11,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-All you need is Python 3.6
+All you need is Python 3
 
 ### Installing
 
