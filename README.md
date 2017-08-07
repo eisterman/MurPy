@@ -18,17 +18,29 @@ All you need is Python 3.6
 Simply open a new Python Script (.py) and write a main function with the Code and the right import: 
 
 ```
-from _environment import Environment  # Compiler
-from _interfaceobjects import VAR, SET, ADD, SUB  # Commands used
+from murpy.commands.memory.stack import VAR, SET  # Commands used (memory)
+from murpy.commands.operators.math import ADD, SUB, MUL  # Commands used (math)
+from murpy.commands.controlflow.IF import IF, ELSE, ENDIF  # Commands used (conditions)
+
+from murpy.compiletools import Environment  # Compiler
+
 
 def main():
     VAR("A", 5)
-    VAR("B", 2)
-    VAR("C", ADD("A", "B"))
-    VAR("D", 2)
+    VAR("B", 0)
+    IF("A")
+    IF("B")
+    SET("B", 4)
+    ELSE()
+    SET("A", 1)
+    ENDIF()
+    ELSE()
+    SET("B", 1)
+    ENDIF()
+    VAR("C", 3)
 ```
 
-Write in the "real main" of the script the compile procedure:
+Write in the _compilation main_ of the script the compile procedure:
 
 ```
 if __name__ == '__main__':
@@ -48,10 +60,13 @@ Now you have the code in the property `env.BFCode`. For example put it in a file
 
 In the file `demoMurPy.py` there is a demo with a Brainfuck Virtual Machine ready at use.
 
-<!--## Running the tests
+## Running the tests
 
-Explain how to run the automated tests for this system
+There is included with the package a set of unittest scripts in the folder [/murpy/tests](murpy/tests/) and in the root a script [run_test.py](run_tests.py) for the automatic run of all the test included in the package without the explicit use of the unittest module manually from the user.
 
+For run the tests you can run a single script for the _tests_ folder or directly run the *run_test.py* script for run all of them.
+
+<!--
 ### Break down into end to end tests
 
 Explain what these tests test and why
