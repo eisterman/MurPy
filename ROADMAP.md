@@ -14,7 +14,7 @@
 ## Build & Deploy
 - [ ] Port `dist.bat` in a `dist.py` script for build and deploy automation
 - [ ] Full automate deploy with an automatic check of the unittests
-- [ ] Make the project avaiable under Python 3.6
+- [x] Make the project avaiable under Python 3.6
 - [ ] Check the project with Python 2
 ## Documentation
 - [ ] **WRITE IT**
