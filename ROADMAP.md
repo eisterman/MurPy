@@ -1,7 +1,7 @@
 # Official Roadmap
 ## Unit Test
 - [ ] Split the unit tests in more file/class
-    - [ ] core/objects
+    - [x] core/objects
     - [ ] core/operations
     - [ ] commands/memory
     - [ ] commands/operators

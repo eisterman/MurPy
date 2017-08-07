@@ -22,6 +22,7 @@ class StackObj(MemObj):  # Oggetto rappresentate variabile statica in Stack
         :param byte: Number of bytes allocated from the object. <UNUSED>
         """
         assert byte >= 1
+        assert name is not None
         self._name = str(name)
         self._byte = int(byte)
 
@@ -43,7 +44,7 @@ class RegObj(MemObj):  # Oggetto rappresentante i registri temporanei
         """
         Build a new RegObj instance.
         :param reserved: Status of the Registry. Is at now the registry used from one operation?
-        :param byte: Number of bytes allocated from the object.
+        :param byte: Number of bytes allocated from the object. <UNUSED>
         """
         assert byte >= 1
         assert regkey is not None
