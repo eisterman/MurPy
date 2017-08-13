@@ -11,6 +11,7 @@ class Environment:
         """Create a new Environment indipendent instance."""
         self._code = None
         self.PseudoCode = []  # Contenitore delle operazioni da eseguire
+        # TODO: Refactor StackObject to a StackCollection/StackColl
         self.StackObject = OrderedDict()  # Container degli StackObj
         self.RegistryColl = OrderedDict()  # Container dei RegObj
         self.RoutineDict = {}
@@ -25,9 +26,24 @@ class Environment:
         self.RegistryColl[regkey] = item
         return item
 
+    def getStackPosition(self, stackobjs):
+        """
+        Given a StackObject return the Tape Position of the associated registry.
+        :param stackobjs: Identity Object for the stack variable or a list of it.
+        :return: Tape Position of the registry or a tuple of it.
+        """
+        names = list(self.StackObject)
+        # int(list(env.StackObject).index(self._name1))
+        if not isinstance(stackobjs, Iterable):
+            work = int(stackobjs.name)
+            return int(names.index(work))
+        else:
+            work = tuple(stackobjs)
+            return tuple(int(names.index(obj)) for obj in work)
+
     def getRegPosition(self, regobjs):
         """
-        Given a regkey return the Tape Position of the associated registry.
+        Given a RegObject return the Tape Position of the associated registry.
         :param regobjs: Identity Object for the registry or a list of it.
         :return: Tape Position of the registry or a tuple of it.
         """

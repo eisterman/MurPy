@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from murpy.core.objects.memory import StackObj, RegObj
 # TODO: Documentazione
 
 
@@ -73,9 +74,13 @@ class OperatorOperation(Operation, NestedOperation):
         self._choosedreg = []
 
     def PreCompile(self, env):  # TODO: Somma Nestata (uso della IREGKEY)
-        if self._name1 not in env.StackObject:
+        if self._name1 is None:
+            self._name1 = self._IMEMOBJ[0]
+        elif self._name1 not in env.StackObject:
             raise Exception("Variabile non definita")
-        if self._name2 not in env.StackObject:
+        if self._name2 is None:
+            self._name2 = self._IMEMOBJ[1]
+        elif self._name2 not in env.StackObject:
             raise Exception("Variabile non definita")
         # Registry
         choosedreg = self._choosedreg
@@ -93,7 +98,29 @@ class OperatorOperation(Operation, NestedOperation):
             obj.ReserveBit = self._reservebits[i]
         self._OMEMOBJ = choosedreg[self._exitreg]
 
+    def initGetCode(self, env):
+        # TODO: Implement the head of all the GetCode and so use it later.
+        # TODO: With automatic pointer extraction!!!!!!!! Now we have String and Memobj
+        # TODO: Unire i comportamenti, far parlare a tutti la lingua dei MemObj
+        if isinstance(self._name1, str):
+            A = int(list(env.StackObject).index(self._name1))
+        elif isinstance(self._name1, StackObj):
+            A = env.getStackPosition(self._name1)
+        elif isinstance(self._name1, RegObj):
+            A = env.getRegPosition(self._name1)
+        else:
+            raise Exception("A is undefinable.")
+        if isinstance(self._name2, str):
+            B = int(list(env.StackObject).index(self._name2))
+        elif isinstance(self._name2, StackObj):
+            B = env.getStackPosition(self._name2)
+        elif isinstance(self._name2, RegObj):
+            B = env.getRegPosition(self._name2)
+        else:
+            raise Exception("B is undefinable.")
+        Registry = env.getRegPosition(self._choosedreg)
+        return A, B, Registry
+
     @abstractmethod
     def GetCode(self, env, p):
-        # TODO: Implement the head of all the GetCode and so use it later.
         pass

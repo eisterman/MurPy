@@ -8,9 +8,7 @@ class EqualOp(OperatorOperation):
 
     def GetCode(self, env, p):
         code = ""
-        A = int(list(env.StackObject).index(self._name1))
-        B = int(list(env.StackObject).index(self._name2))
-        R1, R2, R3 = env.getRegPosition(self._choosedreg.keys())
+        A, B, (R1, R2, R3) = super().initGetCode(env)
         # Cleanup
         code += env.MoveP(p, R3) + "[-]"
         code += env.MoveP(R3, R2) + "[-]"
@@ -36,9 +34,7 @@ class NotEqualOp(OperatorOperation):
 
     def GetCode(self, env, p):
         code = ""
-        A = int(list(env.StackObject).index(self._name1))
-        B = int(list(env.StackObject).index(self._name2))
-        R1, R2, R3 = env.getRegPosition(self._choosedreg.keys())
+        A, B, (R1, R2, R3) = super().initGetCode(env)
         # Cleanup
         code += env.MoveP(p, R3) + "[-]"
         code += env.MoveP(R3, R2) + "[-]"
@@ -67,8 +63,6 @@ class GreaterOp(OperatorOperation):
 
     def GetCode(self, env, p):
         code = ""
-        A = int(list(env.StackObject).index(self._name1))
-        B = int(list(env.StackObject).index(self._name2))
-        R1, R2, R3 = env.getRegPosition(self._choosedreg.keys())
+        A, B, (R1, R2, R3) = super().initGetCode(env)
         # Begin Operation
         # TODO: Farlo io e rivederlo

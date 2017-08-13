@@ -3,6 +3,12 @@
 - [ ] Split the unit tests in more file/class
     - [x] core/objects
     - [ ] core/operations
+        - [ ] init
+        - [ ] memory
+        - [ ] math
+        - [ ] special
+        - [ ] compare
+        - [ ] controlflow
     - [ ] commands/memory
     - [ ] commands/operators
     - [ ] commands/controlflow
@@ -24,8 +30,10 @@
 - [ ] Translate all the doc from Italian to English
 - [ ] New README.md
 ## New Features
+- [ ] For/While loops
 - [ ] Subroutine support
-- [ ] Nested OperatorOperation
+- [x] Nested OperatorOperation
+    - [ ] Activate it in Commands
 - [ ] Support to comparison operation
     - [ ] Greater
         - [ ] GreaterOp
@@ -36,11 +44,14 @@
     - [ ] Choose between C++ and Python3
     - [ ] With Special Registry at negative positions
     - [ ] Check code validity before run
-- [ ] Environment static method for registry clean
+- [ ] Environment Update
+    - [ ] Static method for registry clean
+    - [ ] Method for adding stack variable
 ## Bugfixes and general improvements
 - [ ] Assert the World
 - [ ] Move some code from OperatorOperation child's GetCode to his
 ## Future Additions
+- [ ] External language compilation with Parser
 - [ ] Type System
     - [ ] Support to multiple cell variable
 - [ ] Precompilation Flags
