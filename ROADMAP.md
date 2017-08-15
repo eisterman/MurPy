@@ -25,7 +25,8 @@
 - [ ] New README.md
 ## New Features
 - [ ] Subroutine support
-- [ ] Nested OperatorOperation
+- [x] Nested OperatorOperation
+    - [ ] Complete support
 - [ ] Support to comparison operation
     - [ ] Greater
         - [ ] GreaterOp
@@ -39,7 +40,7 @@
 - [ ] Environment static method for registry clean
 ## Bugfixes and general improvements
 - [ ] Assert the World
-- [ ] Move some code from OperatorOperation child's GetCode to his
+- [x] Move some code from OperatorOperation child's GetCode to his
 ## Future Additions
 - [ ] Type System
     - [ ] Support to multiple cell variable
