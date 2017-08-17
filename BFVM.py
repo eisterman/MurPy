@@ -38,3 +38,6 @@ def brainfuck (source):
     # Output
     buffer = tuple( tape[i] for i in range(len(tape)) )
     return buffer, runned
+
+if __name__ == "__main__":
+    brainfuck(sys.argv[1])

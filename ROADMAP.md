@@ -49,7 +49,7 @@
     - [ ] Method for adding stack variable
 ## Bugfixes and general improvements
 - [ ] Assert the World
-- [ ] Move some code from OperatorOperation child's GetCode to his
+- [x] Move some code from OperatorOperation child's GetCode to his
 ## Future Additions
 - [ ] External language compilation with Parser
 - [ ] Type System
