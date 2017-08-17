@@ -1,4 +1,6 @@
 import unittest
+from random import randrange
+from copy import copy
 
 from murpy.core.objects.memory import StackObj, RegObj
 
@@ -23,7 +25,7 @@ class StackObjTestCase(unittest.TestCase):
 
 class RegObjTestCase(unittest.TestCase):
     def setUp(self):
-        self.skeys = ["test{}".format(i) for i in range(5)] + list(range(5))
+        self.skeys = list(range(10))
 
     def test_init_empty(self):
         try:
@@ -50,9 +52,49 @@ class RegObjTestCase(unittest.TestCase):
     def test_wrongreservebit_init(self):
         start = (0, 1, 2, 3, "", "ciao", None)
         aspected = (False, True, True, True, False, True, False)
-        for test, yeah in zip(start, aspected):
-            obj = RegObj(self.skeys[0], test)
-            self.assertEqual(obj.ReserveBit, yeah)
+        for starter, expected in zip(start, aspected):
+            obj = RegObj(self.skeys[0], starter)
+            self.assertEqual(obj.ReserveBit, expected)
+
+    def test_equality_regkey(self):
+        while True:
+            key1 = randrange(0, 1000000)
+            key2 = randrange(0, 1000000)
+            if key1 != key2:
+                break
+        obj1 = RegObj(key1)
+        obj2 = RegObj(key2)
+        self.assertNotEqual(obj1, obj2)
+        obj3 = RegObj(copy(key1))
+        self.assertEqual(obj3, obj1)
+
+    def test_equality_reservebit(self):
+        key = randrange(0, 1000000)
+        obj1 = RegObj(key, True)
+        obj2 = RegObj(key, False)
+        self.assertNotEqual(obj1, obj2)
+        obj3 = RegObj(key, True)
+        self.assertEqual(obj3, obj1)
+
+    def test_equality_all(self):
+        while True:
+            key1 = randrange(0, 1000000)
+            key2 = randrange(0, 1000000)
+            if key1 != key2:
+                break
+        obj1 = [RegObj(key1, True), RegObj(key1, False)]
+        obj2 = [RegObj(key2, True), RegObj(key2, False)]
+        obj3 = [RegObj(key1, True), RegObj(key1, False)]
+        for o1, o2, o3 in zip(obj1, obj2, obj3):
+            self.assertNotEqual(o1, o2)
+            self.assertEqual(o1, o3)
+            self.assertNotEqual(o3, o2)
+            self.assertNotEqual(o1, o2)
+        for o1, o2, o3 in zip(obj1, reversed(obj2), reversed(obj3)):
+            self.assertNotEqual(o1, o2)
+            self.assertNotEqual(o1, o3)
+            self.assertNotEqual(o3, o2)
+
 
 if __name__ == '__main__':
     unittest.main()

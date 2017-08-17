@@ -44,6 +44,7 @@ class RegObj(MemObj):  # Oggetto rappresentante i registri temporanei
     def __init__(self, regkey, reserved=True, byte=1):
         """
         Build a new RegObj instance.
+        # TODO: regkey doc
         :param reserved: Status of the Registry. Is at now the registry used from one operation?
         :param byte: Number of bytes allocated from the object. <UNUSED>
         """
