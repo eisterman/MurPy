@@ -21,7 +21,7 @@
 - [ ] Port `dist.bat` in a `dist.py` script for build and deploy automation
 - [ ] Full automate deploy with an automatic check of the unittests
 - [x] Make the project avaiable under Python 3.6
-- [ ] Check the project with Python 2
+- [x] Check the project with Python 2 (incompatible)
 ## Documentation
 - [ ] **WRITE IT**
     - [ ] commands/operators/eq
@@ -38,15 +38,24 @@
     - [ ] Greater
         - [ ] GreaterOp
         - [ ] GR command
-## Generic Upgrade
+## Upgrading the MurPy
+- [ ] Subroutine Support
+    - [ ] Multiple subroutine support for Parser
+    - [ ] Support for Precompiler
+    - [ ] Support for Compiler
 - [ ] Write a new BrainFuckVirtualMachine (`BFVM.py`)
     - [ ] With byte and tape options
-    - [ ] Choose between C++ and Python3
+    - [ ] Choose between C++ and Cython (or even C is good)
     - [ ] With Special Registry at negative positions
     - [ ] Check code validity before run
+- [ ] MemObj4Operations Update
+    - [ ] Move every part of the Operations to the pure use of MemObj
+    - [ ] Move every Command to do it the conversion of the user args to MemObjs instead.
 - [ ] Environment Update
     - [ ] Static method for registry clean
     - [ ] Method for adding stack variable
+    - [ ] Environment is used for equality and other operation between MemObj
+        - [ ] Use this for remove the hazard of duplicated MemObjs
 ## Bugfixes and general improvements
 - [ ] Assert the World
 - [x] Move some code from OperatorOperation child's GetCode to his
