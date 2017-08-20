@@ -2,7 +2,7 @@ import unittest
 from collections import OrderedDict
 from copy import deepcopy
 
-from murpy.compiletools import Environment, RegObj
+from murpy.compiletools import Environment, StackObj, RegObj
 
 
 class EnvState:
@@ -46,12 +46,58 @@ class MyTestCase(unittest.TestCase):
         regobj = self.env.RequestRegistry()
         state1 = EnvState.getState(self.env)
         for i in (0, 1, 2, 4):
-            self.assertEqual(state0.params[i],state1.params[i])
+            self.assertEqual(state0.params[i], state1.params[i])
         self.assertNotEqual(state0.params[3], state1.params[3])
         self.assertEqual([x for x in state1.params[3].values() \
                           if x not in state0.params[3].values()], [regobj])
 
-    # TODO: Continue Unittesting
+    def test_RequestStackName(self):
+        state0 = EnvState.getState(self.env)
+        name1 = "test1"
+        name2 = "tester2"
+        stackobj1 = self.env.RequestStackName(name1)
+        state1 = EnvState.getState(self.env)
+        stackobj2 = self.env.RequestStackName(name2)
+        state2 = EnvState.getState(self.env)
+        for i in (0, 1, 3, 4):
+            self.assertEqual(state0.params[i],state1.params[i])
+            self.assertEqual(state1.params[i], state2.params[i])
+        self.assertNotEqual(state0.params[2], state1.params[2])
+        self.assertNotEqual(state1.params[2], state2.params[2])
+        # Manual build
+        target1 = StackObj(name1)
+        target2 = StackObj(name2)
+        self.assertEqual([tuple(pair) for pair in state1.params[2].items() \
+                if pair not in state0.params[2].items()], [(name1, target1)])
+        self.assertEqual([tuple(pair) for pair in state2.params[2].items() \
+                if pair not in state0.params[2].items()], [(name1, target1), (name2, target2)])
+
+    def test_ExistStackName(self):
+        name = "demotest_ExistStackName"
+        self.assertFalse(self.env.ExistStackName(name))
+        stackobj = self.env.RequestStackName(name)
+        self.assertTrue(self.env.ExistStackName(name))
+        self.assertFalse(self.env.ExistStackName("randomtest"))
+
+    def test_getStackObjByName(self):
+        name = "demotest_getStackObjByName"
+        stackobj = self.env.RequestStackName(name)
+        stackobj_env = self.env.getStackObjByName(name)
+        self.assertIs(stackobj, stackobj_env)
+        with self.assertRaises(Exception):
+            self.env.getStackObjByName(name + "42_broken")
+
+    def test_getStackPosition_single(self):
+        aspected = len(self.env.StackObject)
+        name = "demotest_getStackPosition_single"
+        stackobj = self.env.RequestStackName(name)
+        self.assertEqual(aspected, self.env.getStackPosition(stackobj))
+
+    # TODO
+    def test_getStackPosition_iterable(self):
+        pass
+
+    # TODO: Continue Unittesting from getRegPosition
 
 if __name__ == '__main__':
     unittest.main()
