@@ -39,6 +39,7 @@
         - [ ] GreaterOp
         - [ ] GR command
 ## Upgrading the MurPy
+- [ ] Shift the Environment/Operation interaction to Env's methods
 - [ ] Subroutine Support
     - [ ] Multiple subroutine support for Parser
     - [ ] Support for Precompiler
@@ -67,4 +68,3 @@
 - [ ] Compilation Flags
 - [ ] Math operator compile different code with different precomp and comp Flags
 - [ ] Dynamic memory operation (HEAP support)
-

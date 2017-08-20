@@ -1,6 +1,38 @@
+from functools import wraps
+
 from collections import OrderedDict, Iterable
 from ..commands import InterfaceObj
 from ..core.objects.memory import RegObj
+
+
+def BeforeParse(f):
+    @wraps(f)
+    def wrapper(inst, *args, **kwargs):
+        if inst._parsed is True:
+            raise Exception("Only before Parse")  # TODO: Create Environment Exception
+        return f(inst, *args, **kwargs)
+
+    return wrapper
+
+
+def BeforePrecompile(f):
+    @wraps(f)
+    def wrapper(inst, *args, **kwargs):
+        if inst._precompiled is True:
+            raise Exception("Only before Precompile")  # TODO: Create Environment Exception
+        return f(inst, *args, **kwargs)
+
+    return wrapper
+
+
+def BeforeCompile(f):
+    @wraps(f)
+    def wrapper(inst, *args, **kwargs):
+        if inst._compiled is True:
+            raise Exception("Only before Compile")  # TODO: Create Environment Exception
+        return f(inst, *args, **kwargs)
+
+    return wrapper
 
 
 class Environment:
@@ -15,7 +47,14 @@ class Environment:
         self.StackObject = OrderedDict()  # Container degli StackObj
         self.RegistryColl = OrderedDict()  # Container dei RegObj
         self.RoutineDict = {}
+        self._parsed = False
+        self._precompiled = False
+        self._compiled = False
 
+    def InsertStackObj(self, name):
+        pass
+
+    @BeforeCompile
     def RequestRegistry(self):
         """
         Request a new registry slot.
@@ -26,6 +65,11 @@ class Environment:
         self.RegistryColl[regkey] = item
         return item
 
+    @BeforeCompile
+    def insertInStack(self, stackobjs):
+        pass
+
+    @BeforeCompile
     def getStackPosition(self, stackobjs):
         """
         Given a StackObject return the Tape Position of the associated registry.
@@ -41,6 +85,7 @@ class Environment:
             work = tuple(stackobjs)
             return tuple(int(names.index(obj)) for obj in work)
 
+    @BeforeCompile
     def getRegPosition(self, regobjs):
         """
         Given a RegObject return the Tape Position of the associated registry.
@@ -81,6 +126,7 @@ class Environment:
     def clear(self):
         self.__init__()
 
+    @BeforeParse
     def addRoutine(self, func):
         """
         Introduce in the Routine Dictionary the specified routine.
@@ -91,6 +137,7 @@ class Environment:
         assert hasattr(func, "__name__")
         self.RoutineDict[func.__name__] = func
 
+    @BeforeParse
     def Parse(self):
         """
         Do on the data previously provided the Parsing process.
@@ -100,7 +147,9 @@ class Environment:
         # TODO: Estendere il parser in modo dinamica a casi multifunzione
         self.RoutineDict["main"]()
         self.PseudoCode = InterfaceObj.BUFFER.GetMainBuffer()
+        self._parsed = True
 
+    @BeforePrecompile
     def Precompile(self):
         """
         Do the Precompilation process.
@@ -109,7 +158,9 @@ class Environment:
         """
         for op in self.PseudoCode:
             op.PreCompile(self)
+        self._precompiled = True
 
+    @BeforeCompile
     def Compile(self):
         """
         Do the Compilation process.
@@ -123,9 +174,12 @@ class Environment:
             code, newpointer = op.GetCode(self, pointer)
             self._code += code
             pointer = newpointer
+        self._compiled = True
         return self._code
 
     @property
     def BFCode(self):
         """Get the BFCode if already generated."""
         return self._code
+
+del BeforeParse, BeforePrecompile, BeforeCompile
