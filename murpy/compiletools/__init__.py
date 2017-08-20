@@ -2,7 +2,7 @@ from functools import wraps
 
 from collections import OrderedDict, Iterable
 from ..commands import InterfaceObj
-from ..core.objects.memory import RegObj
+from ..core.objects.memory import StackObj, RegObj
 
 
 def BeforeParse(f):
@@ -51,8 +51,18 @@ class Environment:
         self._precompiled = False
         self._compiled = False
 
-    def InsertStackObj(self, name):
-        pass
+    @BeforePrecompile
+    def ExistStackName(self, name):
+        return name in self.StackObject.keys()
+
+    @BeforePrecompile
+    def RequestStackName(self, name):
+        if self.ExistStackName(name):
+            raise Exception("Required insertion of duplicated Stack name!")
+        else:
+            tmp = StackObj(name)
+            self.StackObject[name] = tmp
+            return tmp
 
     @BeforeCompile
     def RequestRegistry(self):
@@ -66,11 +76,14 @@ class Environment:
         return item
 
     @BeforeCompile
-    def insertInStack(self, stackobjs):
-        pass
+    def getStackObjByName(self, name):
+        if not self.ExistStackName(name):
+            raise Exception("Variabile non definita")
+        return self.StackObject[name]
 
     @BeforeCompile
     def getStackPosition(self, stackobjs):
+        # TODO: Migliorare impacchettamento (*args)
         """
         Given a StackObject return the Tape Position of the associated registry.
         :param stackobjs: Identity Object for the stack variable or a list of it.
@@ -79,7 +92,7 @@ class Environment:
         names = list(self.StackObject)
         # int(list(env.StackObject).index(self._name1))
         if not isinstance(stackobjs, Iterable):
-            work = int(stackobjs.name)
+            work = str(stackobjs.name)
             return int(names.index(work))
         else:
             work = tuple(stackobjs)

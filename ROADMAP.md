@@ -39,7 +39,6 @@
         - [ ] GreaterOp
         - [ ] GR command
 ## Upgrading the MurPy
-- [ ] Shift the Environment/Operation interaction to Env's methods
 - [ ] Subroutine Support
     - [ ] Multiple subroutine support for Parser
     - [ ] Support for Precompiler
@@ -51,10 +50,19 @@
     - [ ] Check code validity before run
 - [ ] MemObj4Operations Update
     - [ ] Move every part of the Operations to the pure use of MemObj
-    - [ ] Move every Command to do it the conversion of the user args to MemObjs instead.
+    - [ ] Commands pass name and value to Ops. After Precompile ONLY MemObj
 - [ ] Environment Update
+    - [ ] Shift the Environment/Operation interaction to Env's methods
+        - [ ] core/operations
+            - [ ] init
+            - [x] memory
+            - [ ] math
+            - [ ] special
+            - [ ] compare
+            - [ ] controlflow
     - [ ] Static method for registry clean
-    - [ ] Method for adding stack variable
+        - [x] Write the method
+        - [ ] Use in every opperation
     - [ ] Environment is used for equality and other operation between MemObj
         - [ ] Use this for remove the hazard of duplicated MemObjs
 ## Bugfixes and general improvements
