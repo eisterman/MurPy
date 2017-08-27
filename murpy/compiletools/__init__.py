@@ -8,6 +8,7 @@ from ..core.objects.memory import StackObj, RegObj
 def BeforeParse(f):
     @wraps(f)
     def wrapper(inst, *args, **kwargs):
+        # noinspection PyProtectedMember
         if inst._parsed is True:
             raise Exception("Only before Parse")  # TODO: Create Environment Exception
         return f(inst, *args, **kwargs)
@@ -18,6 +19,7 @@ def BeforeParse(f):
 def BeforePrecompile(f):
     @wraps(f)
     def wrapper(inst, *args, **kwargs):
+        # noinspection PyProtectedMember
         if inst._precompiled is True:
             raise Exception("Only before Precompile")  # TODO: Create Environment Exception
         return f(inst, *args, **kwargs)
@@ -28,6 +30,7 @@ def BeforePrecompile(f):
 def BeforeCompile(f):
     @wraps(f)
     def wrapper(inst, *args, **kwargs):
+        # noinspection PyProtectedMember
         if inst._compiled is True:
             raise Exception("Only before Compile")  # TODO: Create Environment Exception
         return f(inst, *args, **kwargs)

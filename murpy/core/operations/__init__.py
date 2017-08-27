@@ -40,6 +40,7 @@ class Operation(ABC):
         return "", 0
 
 
+# TODO: If possible make some method per editing the _XMEMOBJ
 # TODO: Assert the World
 class INestedOperation(ABC):
     def __init__(self):
@@ -76,11 +77,11 @@ class OperatorOperation(Operation, NestedOperation):
     def PreCompile(self, env):  # TODO: Somma Nestata (uso della IREGKEY)
         if self._name1 is None:
             self._name1 = self._IMEMOBJ[0]
-        elif self._name1 not in env.StackObject:
+        elif not env.ExistStackName(self._name1):
             raise Exception("Variabile non definita")
         if self._name2 is None:
             self._name2 = self._IMEMOBJ[1]
-        elif self._name2 not in env.StackObject:
+        elif not env.ExistStackName(self._name2):
             raise Exception("Variabile non definita")
         # Registry
         choosedreg = self._choosedreg

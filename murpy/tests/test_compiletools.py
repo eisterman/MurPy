@@ -2,13 +2,18 @@ import unittest
 from collections import OrderedDict
 from copy import deepcopy
 
-from murpy.compiletools import Environment, StackObj, RegObj
+from murpy.compiletools import Environment, StackObj
 
 
+# noinspection PyProtectedMember
 class EnvState:
-    def __init__(self, bfcode=None, pcode=[], stackobjs=OrderedDict(),
-                 regobjs=OrderedDict(), functions={}):
+    def __init__(self, bfcode=None, pcode=None, stackobjs=OrderedDict(),
+                 regobjs=OrderedDict(), functions=None):
         # Copy of the default value with list() and dict() here
+        if pcode is None:
+            pcode = []
+        if functions is None:
+            functions = {}
         self._code = bfcode
         self.PseudoCode = list(pcode)  # Contenitore delle operazioni da eseguire
         self.StackObject = stackobjs  # Container degli StackObj
@@ -17,13 +22,13 @@ class EnvState:
 
     def __eq__(self, other):
         return self._code == other._code and self.PseudoCode == other.PseudoCode and \
-            self.StackObject == other.StackObject and self.RegistryColl == \
-            other.RegistryColl and self.RoutineDict == other.RoutineDict
+               self.StackObject == other.StackObject and self.RegistryColl == other.RegistryColl and \
+               self.RoutineDict == other.RoutineDict
 
     @property
     def params(self):
         return self._code, self.PseudoCode, self.StackObject, self.RegistryColl, \
-            self.RoutineDict
+               self.RoutineDict
 
     @staticmethod
     def getState(env: Environment):
@@ -34,7 +39,7 @@ class EnvState:
     def __repr__(self):
         return "Env(code={},Pcode={},Stack={},Registry={},Routine={})".format(
             self._code, self.PseudoCode, self.StackObject, self.RegistryColl,
-            self.RoutineDict )
+            self.RoutineDict)
 
 
 class MyTestCase(unittest.TestCase):
@@ -48,7 +53,7 @@ class MyTestCase(unittest.TestCase):
         for i in (0, 1, 2, 4):
             self.assertEqual(state0.params[i], state1.params[i])
         self.assertNotEqual(state0.params[3], state1.params[3])
-        self.assertEqual([x for x in state1.params[3].values() \
+        self.assertEqual([x for x in state1.params[3].values()
                           if x not in state0.params[3].values()], [regobj])
 
     def test_RequestStackName(self):
@@ -60,21 +65,24 @@ class MyTestCase(unittest.TestCase):
         stackobj2 = self.env.RequestStackName(name2)
         state2 = EnvState.getState(self.env)
         for i in (0, 1, 3, 4):
-            self.assertEqual(state0.params[i],state1.params[i])
+            self.assertEqual(state0.params[i], state1.params[i])
             self.assertEqual(state1.params[i], state2.params[i])
         self.assertNotEqual(state0.params[2], state1.params[2])
         self.assertNotEqual(state1.params[2], state2.params[2])
         # Manual build
         target1 = StackObj(name1)
         target2 = StackObj(name2)
-        self.assertEqual([tuple(pair) for pair in state1.params[2].items() \
-                if pair not in state0.params[2].items()], [(name1, target1)])
-        self.assertEqual([tuple(pair) for pair in state2.params[2].items() \
-                if pair not in state0.params[2].items()], [(name1, target1), (name2, target2)])
+        self.assertEqual(target1, stackobj1)
+        self.assertEqual(target2, stackobj2)
+        self.assertEqual([tuple(pair) for pair in state1.params[2].items()
+                          if pair not in state0.params[2].items()], [(name1, target1)])
+        self.assertEqual([tuple(pair) for pair in state2.params[2].items()
+                          if pair not in state0.params[2].items()], [(name1, target1), (name2, target2)])
 
     def test_ExistStackName(self):
         name = "demotest_ExistStackName"
         self.assertFalse(self.env.ExistStackName(name))
+        # noinspection PyUnusedLocal
         stackobj = self.env.RequestStackName(name)
         self.assertTrue(self.env.ExistStackName(name))
         self.assertFalse(self.env.ExistStackName("randomtest"))
@@ -97,7 +105,8 @@ class MyTestCase(unittest.TestCase):
     def test_getStackPosition_iterable(self):
         pass
 
-    # TODO: Continue Unittesting from getRegPosition
+        # TODO: Continue Unittesting from getRegPosition
+
 
 if __name__ == '__main__':
     unittest.main()
