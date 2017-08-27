@@ -53,13 +53,8 @@
     - [ ] Commands pass name and value to Ops. After Precompile ONLY MemObj
 - [ ] Environment Update
     - [ ] Shift the Environment/Operation interaction to Env's methods
-        - [ ] core/operations
-            - [ ] init
-            - [x] memory
-            - [ ] math
-            - [ ] special
-            - [ ] compare
-            - [ ] controlflow
+        - [x] core/operations
+        - [ ] Control the code for the need of others Env's methods
     - [ ] Static method for registry clean
         - [x] Write the method
         - [ ] Use in every opperation

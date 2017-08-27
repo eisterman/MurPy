@@ -82,13 +82,13 @@ class OperatorOperation(Operation, NestedOperation):
         elif not env.ExistStackName(self._name1):
             raise Exception("Variabile non definita")
         else:
-            self._memobj1 = env.StackObject[self._name1]
+            self._memobj1 = env.StackColl[self._name1]
         if self._name2 is None:
             self._memobj2 = self._IMEMOBJ[1]
         elif not env.ExistStackName(self._name2):
             raise Exception("Variabile non definita")
         else:
-            self._memobj2 = env.StackObject[self._name2]
+            self._memobj2 = env.StackColl[self._name2]
         # Registry
         choosedreg = self._choosedreg
         nreg = self._nreg
@@ -118,7 +118,7 @@ class OperatorOperation(Operation, NestedOperation):
             B = env.getRegPosition(self._memobj2)
         else:
             raise Exception("B is undefinable.")
-        Registry = env.getRegPosition(self._choosedreg)
+        Registry = tuple(env.getRegPosition(robj) for robj in self._choosedreg)
         return A, B, Registry
 
     @abstractmethod

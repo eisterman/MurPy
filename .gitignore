@@ -3,3 +3,4 @@ __pycache__/
 dist.bat
 dist/
 murpy.egg-info/
+number_of_line.sh

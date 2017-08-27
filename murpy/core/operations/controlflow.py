@@ -35,6 +35,7 @@ class IFConditionOp(Operation, INestedOperation):
         # Allocate Registry
         for obj in choosedreg:
             obj.ReserveBit = True
+        # TODO: Check real utiliy of this Reservation
         if isinstance(self._condmemobj, RegObj):
             self._condmemobj.ReserveBit = True
         # Precompile Nested
@@ -53,7 +54,7 @@ class IFConditionOp(Operation, INestedOperation):
     def GetCode(self, env, p):
         code = ""
         RCOND = env.getRegPosition(self._condmemobj)
-        R1, R2 = env.getRegPosition(self._choosedreg)
+        R1, R2 = (env.getRegPosition(robj) for robj in self._choosedreg)
         # Start Code
         code += env.MoveP(p, R1) + "[-]+" + env.MoveP(R1, R2) + "[-]" + env.MoveP(R2, RCOND)
         code += "["

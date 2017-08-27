@@ -1,6 +1,7 @@
 from functools import wraps
+from copy import copy
 
-from collections import OrderedDict, Iterable
+from collections import OrderedDict
 from ..commands import InterfaceObj
 from ..core.objects.memory import StackObj, RegObj
 
@@ -48,16 +49,24 @@ class Environment:
         self.PseudoCode = []  # Contenitore delle operazioni da eseguire
         # TODO: Refactor StackObject to a StackCollection/StackColl
         # TODO: Proteggere Stack e Registry e usare funzioni specifiche per loro
-        self.StackObject = OrderedDict()  # Container degli StackObj
-        self.RegistryColl = OrderedDict()  # Container dei RegObj
+        self._StackColl = OrderedDict()  # Container degli StackObj
+        self._RegistryColl = OrderedDict()  # Container dei RegObj
         self.RoutineDict = {}
         self._parsed = False
         self._precompiled = False
         self._compiled = False
 
+    @property
+    def StackColl(self):
+        return copy(self._StackColl)
+
+    @property
+    def RegistryColl(self):
+        return copy(self._RegistryColl)
+
     @BeforePrecompile
     def ExistStackName(self, name):
-        return name in self.StackObject.keys()
+        return name in self._StackColl.keys()
 
     @BeforePrecompile
     def RequestStackName(self, name):
@@ -65,7 +74,7 @@ class Environment:
             raise Exception("Required insertion of duplicated Stack name!")
         else:
             tmp = StackObj(name)
-            self.StackObject[name] = tmp
+            self._StackColl[name] = tmp
             return tmp
 
     @BeforeCompile
@@ -74,51 +83,38 @@ class Environment:
         Request a new registry slot.
         :return: the new Reg Object.
         """
-        regkey = len(self.RegistryColl)
+        regkey = len(self._RegistryColl)
         item = RegObj(regkey)
-        self.RegistryColl[regkey] = item
+        self._RegistryColl[regkey] = item
         return item
 
     @BeforeCompile
     def getStackObjByName(self, name):
         if not self.ExistStackName(name):
             raise Exception("Variabile non definita")
-        return self.StackObject[name]
+        return self._StackColl[name]
 
     @BeforeCompile
     def getStackPosition(self, stackobjs):
-        # TODO: Migliorare impacchettamento (*args)
         """
         Given a StackObject return the Tape Position of the associated registry.
         :param stackobjs: Identity Object for the stack variable or a list of it.
         :return: Tape Position of the registry or a tuple of it.
         """
-        names = list(self.StackObject)
-        # int(list(env.StackObject).index(self._name1))
-        if not isinstance(stackobjs, Iterable):
-            work = str(stackobjs.name)
-            return int(names.index(work))
-        else:
-            work = tuple(stackobjs)
-            return tuple(int(names.index(obj)) for obj in work)
+        names = list(self._StackColl)
+        work = str(stackobjs.name)
+        return int(names.index(work))
 
-    # TODO: Edit getRegPosition
-    # Ci serve dia in risposta solo di un singolo regobjs, l'uso per multipli
-    #   registri deve essere articolata dall'utilizzatore e non dalla funzione in sé
     @BeforeCompile
     def getRegPosition(self, regobjs):
         """
         Given a RegObject return the Tape Position of the associated registry.
-        :param regobjs: Identity Object for the registry or a list of it.
-        :return: Tape Position of the registry or a tuple of it.
+        :param regobjs: Identity Object for the registry.
+        :return: Tape Position of the registry.
         """
-        keys = list(self.RegistryColl.keys())
-        if not isinstance(regobjs, Iterable):
-            work = int(regobjs.regkey)
-            return len(self.StackObject) + keys.index(work)
-        else:
-            work = tuple(regobjs)
-            return tuple((len(self.StackObject) + keys.index(robj.regkey)) for robj in work)
+        keys = list(self._RegistryColl.keys())
+        work = int(regobjs.regkey)
+        return len(self._StackColl) + keys.index(work)
 
     @staticmethod
     def MoveP(start: int, end: int):

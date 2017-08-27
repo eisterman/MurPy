@@ -16,29 +16,29 @@ class EnvState:
             functions = {}
         self._code = bfcode
         self.PseudoCode = list(pcode)  # Contenitore delle operazioni da eseguire
-        self.StackObject = stackobjs  # Container degli StackObj
-        self.RegistryColl = regobjs  # Container dei RegObj
+        self._StackColl = stackobjs  # Container degli StackObj
+        self._RegistryColl = regobjs  # Container dei RegObj
         self.RoutineDict = dict(functions)
 
     def __eq__(self, other):
         return self._code == other._code and self.PseudoCode == other.PseudoCode and \
-               self.StackObject == other.StackObject and self.RegistryColl == other.RegistryColl and \
-               self.RoutineDict == other.RoutineDict
+               self._StackColl == other._StackColl and \
+               self._RegistryColl == other._RegistryColl and self.RoutineDict == other.RoutineDict
 
     @property
     def params(self):
-        return self._code, self.PseudoCode, self.StackObject, self.RegistryColl, \
+        return self._code, self.PseudoCode, self._StackColl, self._RegistryColl, \
                self.RoutineDict
 
     @staticmethod
     def getState(env: Environment):
         """Used for storing the Env state without copying all the Environment"""
-        return EnvState(*(deepcopy(x) for x in (env._code, env.PseudoCode, env.StackObject,
-                                                env.RegistryColl, env.RoutineDict)))
+        return EnvState(*(deepcopy(x) for x in (env._code, env.PseudoCode, env._StackColl,
+                                                env._RegistryColl, env.RoutineDict)))
 
     def __repr__(self):
         return "Env(code={},Pcode={},Stack={},Registry={},Routine={})".format(
-            self._code, self.PseudoCode, self.StackObject, self.RegistryColl,
+            self._code, self.PseudoCode, self._StackColl, self._RegistryColl,
             self.RoutineDict)
 
 
@@ -96,7 +96,7 @@ class MyTestCase(unittest.TestCase):
             self.env.getStackObjByName(name + "42_broken")
 
     def test_getStackPosition_single(self):
-        aspected = len(self.env.StackObject)
+        aspected = len(self.env._StackColl)
         name = "demotest_getStackPosition_single"
         stackobj = self.env.RequestStackName(name)
         self.assertEqual(aspected, self.env.getStackPosition(stackobj))
