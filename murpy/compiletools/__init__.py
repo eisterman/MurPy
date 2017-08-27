@@ -47,6 +47,7 @@ class Environment:
         self._code = None
         self.PseudoCode = []  # Contenitore delle operazioni da eseguire
         # TODO: Refactor StackObject to a StackCollection/StackColl
+        # TODO: Proteggere Stack e Registry e usare funzioni specifiche per loro
         self.StackObject = OrderedDict()  # Container degli StackObj
         self.RegistryColl = OrderedDict()  # Container dei RegObj
         self.RoutineDict = {}
@@ -101,6 +102,9 @@ class Environment:
             work = tuple(stackobjs)
             return tuple(int(names.index(obj)) for obj in work)
 
+    # TODO: Edit getRegPosition
+    # Ci serve dia in risposta solo di un singolo regobjs, l'uso per multipli
+    #   registri deve essere articolata dall'utilizzatore e non dalla funzione in sé
     @BeforeCompile
     def getRegPosition(self, regobjs):
         """

@@ -69,6 +69,8 @@ class OperatorOperation(Operation, NestedOperation):
         super().__init__()
         self._name1 = name1
         self._name2 = name2
+        self._memobj1 = None
+        self._memobj2 = None
         self._nreg = nreg  # Numero di registri
         self._exitreg = int(exitreg)  # Registro d'uscita (numerazione interna 0,1,2,...)
         self._reservebits = reservebits  # Bit di riserva post operazione
@@ -76,13 +78,17 @@ class OperatorOperation(Operation, NestedOperation):
 
     def PreCompile(self, env):  # TODO: Somma Nestata (uso della IREGKEY)
         if self._name1 is None:
-            self._name1 = self._IMEMOBJ[0]
+            self._memobj1 = self._IMEMOBJ[0]
         elif not env.ExistStackName(self._name1):
             raise Exception("Variabile non definita")
+        else:
+            self._memobj1 = env.StackObject[self._name1]
         if self._name2 is None:
-            self._name2 = self._IMEMOBJ[1]
+            self._memobj2 = self._IMEMOBJ[1]
         elif not env.ExistStackName(self._name2):
             raise Exception("Variabile non definita")
+        else:
+            self._memobj2 = env.StackObject[self._name2]
         # Registry
         choosedreg = self._choosedreg
         nreg = self._nreg
@@ -100,23 +106,16 @@ class OperatorOperation(Operation, NestedOperation):
         self._OMEMOBJ = choosedreg[self._exitreg]
 
     def initGetCode(self, env):
-        # TODO: Implement the head of all the GetCode and so use it later.
-        # TODO: With automatic pointer extraction!!!!!!!! Now we have String and Memobj
-        # TODO: Unire i comportamenti, far parlare a tutti la lingua dei MemObj
-        if isinstance(self._name1, str):
-            A = int(list(env.StackObject).index(self._name1))
-        elif isinstance(self._name1, StackObj):
-            A = env.getStackPosition(self._name1)
-        elif isinstance(self._name1, RegObj):
-            A = env.getRegPosition(self._name1)
+        if isinstance(self._memobj1, StackObj):
+            A = env.getStackPosition(self._memobj1)
+        elif isinstance(self._memobj1, RegObj):
+            A = env.getRegPosition(self._memobj1)
         else:
             raise Exception("A is undefinable.")
-        if isinstance(self._name2, str):
-            B = int(list(env.StackObject).index(self._name2))
-        elif isinstance(self._name2, StackObj):
-            B = env.getStackPosition(self._name2)
-        elif isinstance(self._name2, RegObj):
-            B = env.getRegPosition(self._name2)
+        if isinstance(self._memobj2, StackObj):
+            B = env.getStackPosition(self._memobj2)
+        elif isinstance(self._memobj2, RegObj):
+            B = env.getRegPosition(self._memobj2)
         else:
             raise Exception("B is undefinable.")
         Registry = env.getRegPosition(self._choosedreg)
