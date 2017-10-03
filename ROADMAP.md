@@ -12,7 +12,7 @@
     - [ ] commands/memory
     - [ ] commands/operators
     - [ ] commands/controlflow
-    - [ ] compiletools
+    - [ ] compiletools (progress...)
     - [x] Final Tests
         - [ ] New final tests
 - [ ] Write more complete test case
@@ -50,7 +50,8 @@
     - [ ] Check code validity before run
 - [ ] MemObj4Operations Update
     - [ ] Move every part of the Operations to the pure use of MemObj
-    - [ ] Commands pass name and value to Ops. After Precompile ONLY MemObj
+    - [x] Commands pass name and value to Ops. After Precompile ONLY MemObj
+        - [ ] Recheck all the operations
 - [ ] Environment Update
     - [ ] Shift the Environment/Operation interaction to Env's methods
         - [x] core/operations
