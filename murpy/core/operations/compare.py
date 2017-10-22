@@ -59,10 +59,22 @@ class NotEqualOp(OperatorOperation):
 
 class GreaterOp(OperatorOperation):
     def __init__(self, name1, name2):
-        super().__init__(name1, name2, 3, [True, False, False], 0)
+        super().__init__(name1, name2, 1, [True], 0)
 
     def GetCode(self, env, p):
         code = ""
-        A, B, (R1, R2, R3) = super().initGetCode(env)
+        raise Exception("GR not working.")
+        # r1[-] a[b[-a-b]a] (a)[r1+a[-]]
+        # p-out: a
+        A, B, (R1, ) = super().initGetCode(env)
+        # Cleanup
+        code += env.MoveP(p, R1) + "[-]"
         # Begin Operation
-        # TODO: Farlo io e rivederlo
+        #  Reduction
+        code += env.MoveP(R1, A) + "[" + env.MoveP(A, B)  # [
+        code += "[-" + env.MoveP(B, A) + "-" + env.MoveP(A, B) + "]"  # [ ]
+        code += env.MoveP(B, A) + "]"  # ]
+        #  Choosing
+        code += "[" + env.MoveP(A, R1) + "+" + env.MoveP(R1, A) + "[-]]"  # [ [] ]
+        # CLEANUP not required in THIS case
+        return code, A
