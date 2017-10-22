@@ -47,8 +47,6 @@ class Environment:
         """Create a new Environment indipendent instance."""
         self._code = None
         self.PseudoCode = []  # Contenitore delle operazioni da eseguire
-        # TODO: Refactor StackObject to a StackCollection/StackColl
-        # TODO: Proteggere Stack e Registry e usare funzioni specifiche per loro
         self._StackColl = OrderedDict()  # Container degli StackObj
         self._RegistryColl = OrderedDict()  # Container dei RegObj
         self.RoutineDict = {}

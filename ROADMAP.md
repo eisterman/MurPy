@@ -35,9 +35,14 @@
 - [x] Nested OperatorOperation
     - [ ] Activate it in Commands
 - [ ] Support to comparison operation
+    - [x] Equal
+    - [x] NotEqual
     - [ ] Greater
         - [ ] GreaterOp
-        - [ ] GR command
+        - [x] Command GR
+    - [ ] EqGreater
+    - [ ] Smaller
+    - [ ] EqSmaller
 ## Upgrading the MurPy
 - [ ] Subroutine Support
     - [ ] Multiple subroutine support for Parser
@@ -61,9 +66,17 @@
         - [ ] Use in every opperation
     - [ ] Environment is used for equality and other operation between MemObj
         - [ ] Use this for remove the hazard of duplicated MemObjs
+    - [ ] Possibility of mandatory structure in Stack (ex. R1 A B R2 in tape)
+- [ ] MurPy Commands Update
+    - [ ] Rewrite commands as like in Sympy
 ## Bugfixes and general improvements
 - [ ] Assert the World
 - [x] Move some code from OperatorOperation child's GetCode to his
+- [ ] New object for pointer management
+    - [ ] Env is his factory and contain all the same info of Env
+    - [ ] The object can manage pointer operation without verbosity
+        - [ ] obj.MoveP(destination) because the source is in memory from initialization
+    - [ ] Apply all of this in all the Operations...
 ## Future Additions
 - [ ] External language compilation with Parser
 - [ ] Type System
