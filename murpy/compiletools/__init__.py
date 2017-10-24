@@ -86,6 +86,10 @@ class Environment:
         self._RegistryColl[regkey] = item
         return item
 
+    def RequestRegistryArray(self, size):
+        # TODO: Inserire robe belle
+        pass
+
     @BeforeCompile
     def getStackObjByName(self, name):
         if not self.ExistStackName(name):
@@ -195,5 +199,6 @@ class Environment:
     def BFCode(self):
         """Get the BFCode if already generated."""
         return self._code
+
 
 del BeforeParse, BeforePrecompile, BeforeCompile

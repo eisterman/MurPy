@@ -66,7 +66,9 @@
         - [ ] Use in every opperation
     - [ ] Environment is used for equality and other operation between MemObj
         - [ ] Use this for remove the hazard of duplicated MemObjs
-    - [ ] Possibility of mandatory structure in Stack (ex. R1 A B R2 in tape)
+    - [ ] **Possibility of mandatory structure in Stack (ex. R1 A B R2 in tape)**
+        - [ ] Build a RegArrayObj class
+        - [ ] Implement RequestRegistryArray in Environment 
 - [ ] MurPy Commands Update
     - [ ] Rewrite commands as like in Sympy
 ## Bugfixes and general improvements

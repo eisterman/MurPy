@@ -17,7 +17,7 @@ def main_old():
     # 5 2 3 2 10 (reg 0 0 0 2)
 
 
-def main_oldino():
+def main():
     VAR("A", 5)
     VAR("B", 0)
     IF("A")
