@@ -3,7 +3,7 @@ from BFVM import brainfuck
 from murpy.commands.memory.stack import VAR, SET
 from murpy.commands.operators.math import ADD, SUB, MUL
 from murpy.commands.controlflow.IF import IF, ELSE, ENDIF
-from murpy.commands.operators.compare import GR
+from murpy.commands.operators.compare import GR, EQ
 
 from murpy.compiletools import Environment
 
@@ -17,7 +17,7 @@ def main_old():
     # 5 2 3 2 10 (reg 0 0 0 2)
 
 
-def main():
+def main_oldino():
     VAR("A", 5)
     VAR("B", 0)
     IF("A")
@@ -31,6 +31,17 @@ def main():
     ENDIF()
     VAR("C", 3)
     # 1 0 3 | reg
+
+
+def main():
+    VAR("A", 5)
+    VAR("B", 3)
+    VAR("C", 1)
+    VAR("out1", 0)
+    VAR("out2", 10)
+    SET("out1", GR("A", "B"))
+    SET("out2", GR("C", "B"))
+    # 5 3 1 | 1 0 | reg
 
 
 if __name__ == '__main__':
