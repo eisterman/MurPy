@@ -59,22 +59,31 @@ class NotEqualOp(OperatorOperation):
 
 class GreaterOp(OperatorOperation):
     def __init__(self, name1, name2):
-        super().__init__(name1, name2, 1, [True], 0)
+        super().__init__(name1, name2, 6, [False, False, False, False, False, True], 5, True)
 
     def GetCode(self, env, p):
         code = ""
-        raise Exception("GR not working.")
-        # r1[-] a[b[-a-b]a] (a)[r1+a[-]]
-        # p-out: a
-        A, B, (R1, ) = super().initGetCode(env)
+        # R1=0 R2=1 R3=0 R4=A R5=B R6=out(0)
+        # >+>>++>+++ +<+ [->-[>]<<] <[->>>>+<<<<] <[-<]
+        # out-p = R1
+        A, B, Regs = super().initGetCode(env)
+        R1, R2, R3, R4, R5, R6 = Regs
         # Cleanup
-        code += env.MoveP(p, R1) + "[-]"
+        clrcode, ptr = env.ClearRegList(p, Regs)
+        code += clrcode
         # Begin Operation
-        #  Reduction
-        code += env.MoveP(R1, A) + "[" + env.MoveP(A, B)  # [
-        code += "[-" + env.MoveP(B, A) + "-" + env.MoveP(A, B) + "]"  # [ ]
-        code += env.MoveP(B, A) + "]"  # ]
-        #  Choosing
-        code += "[" + env.MoveP(A, R1) + "+" + env.MoveP(R1, A) + "[-]]"  # [ [] ]
-        # CLEANUP not required in THIS case
-        return code, A
+        #  Introduction
+        code += env.MoveP(ptr, R2) + "+" + env.MoveP(R2, A)
+        code += "[-" + env.MoveP(A, R3) + "+" + env.MoveP(R3, R4) + "+" + env.MoveP(R4, A) + "]"
+        code += env.MoveP(A, R3) + "[-" + env.MoveP(R3, A) + "+" + env.MoveP(A, R3) + "]"
+        code += env.MoveP(R3, B) + "[-" + env.MoveP(B, R3) + "+" + env.MoveP(R3, R5) + "+" + env.MoveP(R5, B) + "]"
+        code += env.MoveP(B, R3) + "[-" + env.MoveP(R3, B) + "+" + env.MoveP(B, R3) + "]"
+        code += env.MoveP(R3, R5) + "+" + env.MoveP(R5, R4) + "+"
+        #  Magic Loop
+        code += "[->-[>]<<]"
+        # Output and Syncronization
+        code += "<[->>>>+<<<<]<[-<]"
+        # CLEANUP
+        clrcode, ptr = env.ClearRegList(R1, (R1, R2, R3, R4, R5))
+        code += clrcode
+        return code, ptr

@@ -65,7 +65,7 @@ class NestedOperation(INestedOperation, ONestedOperation):
 
 
 class OperatorOperation(Operation, NestedOperation):
-    def __init__(self, name1, name2, nreg, reservebits, exitreg):
+    def __init__(self, name1, name2, nreg, reservebits, exitreg, contiguous_memory=False):
         super().__init__()
         self._name1 = name1
         self._name2 = name2
@@ -75,6 +75,7 @@ class OperatorOperation(Operation, NestedOperation):
         self._exitreg = int(exitreg)  # Registro d'uscita (numerazione interna 0,1,2,...)
         self._reservebits = reservebits  # Bit di riserva post operazione
         self._choosedreg = []
+        self._contiguous_memory = contiguous_memory
 
     def PreCompile(self, env):  # TODO: Somma Nestata (uso della IREGKEY)
         if self._name1 is None:
@@ -92,14 +93,18 @@ class OperatorOperation(Operation, NestedOperation):
         # Registry
         choosedreg = self._choosedreg
         nreg = self._nreg
-        for regobj in env.RegistryColl.values():
-            if not regobj.ReserveBit and len(choosedreg) < nreg:
+        if not self._contiguous_memory:
+            for regobj in env.RegistryColl.values():
+                if not regobj.ReserveBit and len(choosedreg) < nreg:
+                    choosedreg.append(regobj)
+                elif len(choosedreg) == nreg:
+                    break
+            while len(choosedreg) < nreg:
+                regobj = env.RequestRegistry()
                 choosedreg.append(regobj)
-            elif len(choosedreg) == nreg:
-                break
-        while len(choosedreg) < nreg:
-            regobj = env.RequestRegistry()
-            choosedreg.append(regobj)
+        else:  # Contiguous Memory Implementation
+            self._choosedreg = env.RequestRegistryArray(nreg)
+            choosedreg = self._choosedreg
         # Ref Power
         for i, obj in enumerate(choosedreg):
             obj.ReserveBit = self._reservebits[i]

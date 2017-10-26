@@ -42,7 +42,7 @@ class EnvState:
             self.RoutineDict)
 
 
-class MyTestCase(unittest.TestCase):
+class EnvironmentTestCase(unittest.TestCase):
     def setUp(self):
         self.env = Environment()
 

@@ -87,6 +87,15 @@ class Environment:
         return item
 
     @BeforeCompile
+    def RequestRegistryArray(self, size):
+        # TODO: Documentazione
+        # Di per se richieste successive hanno regkey successive ed adiacenti
+        # PER ORA...
+        assert size > 0
+        output = tuple([self.RequestRegistry() for _ in range(size)])
+        return output
+
+    @BeforeCompile
     def getStackObjByName(self, name):
         if not self.ExistStackName(name):
             raise Exception("Variabile non definita")
@@ -195,5 +204,6 @@ class Environment:
     def BFCode(self):
         """Get the BFCode if already generated."""
         return self._code
+
 
 del BeforeParse, BeforePrecompile, BeforeCompile

@@ -66,12 +66,17 @@
         - [ ] Use in every opperation
     - [ ] Environment is used for equality and other operation between MemObj
         - [ ] Use this for remove the hazard of duplicated MemObjs
-    - [ ] Possibility of mandatory structure in Stack (ex. R1 A B R2 in tape)
+    - [ ] **Possibility of mandatory structure in Stack (ex. R1 A B R2 in tape)**
+        - [x] Implement RequestRegistryArray in Environment
+            - [ ] Upgrade with support for recovery contiguous registry not used
+        - [x] GreaterOp implementation
+- [ ] Internal Command Interface for Brainfuck Virtual Machine
 - [ ] MurPy Commands Update
     - [ ] Rewrite commands as like in Sympy
 ## Bugfixes and general improvements
 - [ ] Assert the World
 - [x] Move some code from OperatorOperation child's GetCode to his
+- [ ] Remove NREG in Operation Definition, use only RegistryBitList
 - [ ] New object for pointer management
     - [ ] Env is his factory and contain all the same info of Env
     - [ ] The object can manage pointer operation without verbosity
