@@ -9,9 +9,7 @@ class AdditionOp(OperatorOperation):
     def GetCode(self, env, p):
         # TODO: Cominciare a utilizzare i parametri di compilazione
         code = ""
-        A = int(list(env.StackObject).index(self._name1))
-        B = int(list(env.StackObject).index(self._name2))
-        R1, R2 = env.getRegPosition(self._choosedreg.keys())
+        A, B, (R1, R2) = super().initGetCode(env)
         code += env.MoveP(p, A)
         code += "[-" + env.MoveP(A, R1) + "+" + env.MoveP(R1, R2) + "+" + env.MoveP(R2, A) + "]"
         code += env.MoveP(A, R2)
@@ -30,9 +28,7 @@ class SubtractionOp(OperatorOperation):
 
     def GetCode(self, env, p):
         code = ""
-        A = int(list(env.StackObject).index(self._name1))
-        B = int(list(env.StackObject).index(self._name2))
-        R1, R2 = env.getRegPosition(self._choosedreg.keys())
+        A, B, (R1, R2) = super().initGetCode(env)
         code += env.MoveP(p, A)
         code += "[-" + env.MoveP(A, R1) + "+" + env.MoveP(R1, R2) + "+" + env.MoveP(R2, A) + "]"
         code += env.MoveP(A, R2)
@@ -53,9 +49,7 @@ class MultiplicationOp(OperatorOperation):
 
     def GetCode(self, env, p):
         code = ""
-        A = int(list(env.StackObject).index(self._name1))
-        B = int(list(env.StackObject).index(self._name2))
-        R1, R2, R3, R4 = env.getRegPosition(self._choosedreg.keys())
+        A, B, (R1, R2, R3, R4) = super().initGetCode(env)
         code += env.MoveP(p, A)
         # A --> R1, R2
         code += "[-" + env.MoveP(A, R1) + "+" + env.MoveP(R1, R2) + "+" + env.MoveP(R2, A) + "]"

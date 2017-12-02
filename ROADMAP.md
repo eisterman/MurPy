@@ -1,0 +1,93 @@
+# Official Roadmap
+## Unit Test
+- [ ] Split the unit tests in more file/class
+    - [x] core/objects
+    - [ ] core/operations
+        - [ ] init
+        - [ ] memory
+        - [ ] math
+        - [ ] special
+        - [ ] compare
+        - [ ] controlflow
+    - [ ] commands/memory
+    - [ ] commands/operators
+    - [ ] commands/controlflow
+    - [ ] compiletools (progress...)
+    - [x] Final Tests
+        - [ ] New final tests
+- [ ] Write more complete test case
+- [ ] Test for the cleanness of the registries
+## Build & Deploy
+- [ ] Port `dist.bat` in a `dist.py` script for build and deploy automation
+- [ ] Full automate deploy with an automatic check of the unittests
+- [x] Make the project avaiable under Python 3.6
+- [x] Check the project with Python 2 (incompatible)
+## Documentation
+- [ ] **WRITE IT**
+    - [ ] commands/operators/eq
+    - [ ] commands/operators/neq
+    - [ ] others....
+- [ ] Translate all the doc from Italian to English
+- [ ] New README.md
+## New Features
+- [ ] For/While loops
+- [ ] Subroutine support
+- [x] Nested OperatorOperation
+    - [ ] Activate it in Commands
+- [ ] Support to comparison operation
+    - [x] Equal
+    - [x] NotEqual
+    - [x] Greater
+    - [ ] EqGreater
+        - [ ] EqGreaterOp
+        - [ ] Command EGR
+    - [ ] Smaller
+    - [ ] EqSmaller
+## Upgrading the MurPy
+- [ ] Subroutine Support
+    - [ ] Multiple subroutine support for Parser
+    - [ ] Support for Precompiler
+    - [ ] Support for Compiler
+- [ ] Write a new BrainFuckVirtualMachine (`BFVM.py`)
+    - [ ] With byte and tape options
+    - [ ] Choose between C++ and Cython (or even C is good)
+    - [ ] With Special Registry at negative positions
+    - [ ] Check code validity before run
+- [ ] MemObj4Operations Update
+    - [ ] Move every part of the Operations to the pure use of MemObj
+    - [x] Commands pass name and value to Ops. After Precompile ONLY MemObj
+        - [ ] Recheck all the operations
+- [ ] Environment Update
+    - [ ] Shift the Environment/Operation interaction to Env's methods
+        - [x] core/operations
+        - [ ] Control the code for the need of others Env's methods
+    - [ ] Static method for registry clean
+        - [x] Write the method
+        - [ ] Use in every opperation
+    - [ ] Environment is used for equality and other operation between MemObj
+        - [ ] Use this for remove the hazard of duplicated MemObjs
+    - [ ] **Possibility of mandatory structure in Stack (ex. R1 A B R2 in tape)**
+        - [x] Implement RequestRegistryArray in Environment
+            - [ ] Check for recovery of contiguous registry not used
+        - [x] GreaterOp implementation
+- [ ] (?) Internal Command Interface for Brainfuck Virtual Machine
+- [ ] MurPy Commands Update (maybe)
+    - [ ] Rewrite commands as like in Sympy
+## Bugfixes and general improvements
+- [ ] Assert the World
+- [x] Move some code from OperatorOperation child's GetCode method to his
+- [ ] Remove NREG in Operation Definition, use only RegistryBitList
+- [ ] New object (MurPy side) for pointer management
+    - [ ] Env is his factory and contain all the same info of Env
+    - [ ] The object can manage pointer operation without verbosity
+        - [ ] obj.MoveP(destination) because the source is in memory from initialization
+    - [ ] Apply all of this in all the Operations...
+## Future Additions
+- [ ] External language compilation with Parser
+- [ ] Type System
+    - [ ] Support to multiple cell variable
+- [ ] Precompilation Flags
+- [ ] Compilation Flags
+- [ ] Math operator compile different code with different precomp and comp Flags
+- [ ] Optimization in PostCompilation
+- [ ] Dynamic memory operation (HEAP support)

@@ -1,6 +1,42 @@
-from collections import OrderedDict, Iterable
+from functools import wraps
+from copy import copy
+
+from collections import OrderedDict
 from ..commands import InterfaceObj
-from ..core.objects.memory import RegObj
+from ..core.objects.memory import StackObj, RegObj
+
+
+def BeforeParse(f):
+    @wraps(f)
+    def wrapper(inst, *args, **kwargs):
+        # noinspection PyProtectedMember
+        if inst._parsed is True:
+            raise Exception("Only before Parse")  # TODO: Create Environment Exception
+        return f(inst, *args, **kwargs)
+
+    return wrapper
+
+
+def BeforePrecompile(f):
+    @wraps(f)
+    def wrapper(inst, *args, **kwargs):
+        # noinspection PyProtectedMember
+        if inst._precompiled is True:
+            raise Exception("Only before Precompile")  # TODO: Create Environment Exception
+        return f(inst, *args, **kwargs)
+
+    return wrapper
+
+
+def BeforeCompile(f):
+    @wraps(f)
+    def wrapper(inst, *args, **kwargs):
+        # noinspection PyProtectedMember
+        if inst._compiled is True:
+            raise Exception("Only before Compile")  # TODO: Create Environment Exception
+        return f(inst, *args, **kwargs)
+
+    return wrapper
 
 
 class Environment:
@@ -11,33 +47,81 @@ class Environment:
         """Create a new Environment indipendent instance."""
         self._code = None
         self.PseudoCode = []  # Contenitore delle operazioni da eseguire
-        self.StackObject = OrderedDict()  # Container degli StackObj
-        self.RegistryColl = OrderedDict()  # Container dei RegObj
+        self._StackColl = OrderedDict()  # Container degli StackObj
+        self._RegistryColl = OrderedDict()  # Container dei RegObj
         self.RoutineDict = {}
+        self._parsed = False
+        self._precompiled = False
+        self._compiled = False
 
+    @property
+    def StackColl(self):
+        return copy(self._StackColl)
+
+    @property
+    def RegistryColl(self):
+        return copy(self._RegistryColl)
+
+    @BeforePrecompile
+    def ExistStackName(self, name):
+        return name in self._StackColl.keys()
+
+    @BeforePrecompile
+    def RequestStackName(self, name):
+        if self.ExistStackName(name):
+            raise Exception("Required insertion of duplicated Stack name!")
+        else:
+            tmp = StackObj(name)
+            self._StackColl[name] = tmp
+            return tmp
+
+    @BeforeCompile
     def RequestRegistry(self):
         """
         Request a new registry slot.
-        :return: regkey = Identity Key of the new Reg, item = the new Reg Object.
+        :return: the new Reg Object.
         """
-        regkey = len(self.RegistryColl)
-        item = RegObj()
-        self.RegistryColl[regkey] = item
-        return regkey, item
+        regkey = len(self._RegistryColl)
+        item = RegObj(regkey)
+        self._RegistryColl[regkey] = item
+        return item
 
-    def getRegPosition(self, regkey):
+    @BeforeCompile
+    def RequestRegistryArray(self, size):
+        # TODO: Documentazione
+        # Di per se richieste successive hanno regkey successive ed adiacenti
+        # PER ORA...
+        assert size > 0
+        output = tuple([self.RequestRegistry() for _ in range(size)])
+        return output
+
+    @BeforeCompile
+    def getStackObjByName(self, name):
+        if not self.ExistStackName(name):
+            raise Exception("Variabile non definita")
+        return self._StackColl[name]
+
+    @BeforeCompile
+    def getStackPosition(self, stackobjs):
         """
-        Given a regkey return the Tape Position of the associated registry.
-        :param regkey: Identity Key fo the registry or a list of it.
+        Given a StackObject return the Tape Position of the associated registry.
+        :param stackobjs: Identity Object for the stack variable or a list of it.
         :return: Tape Position of the registry or a tuple of it.
         """
-        keys = list(self.RegistryColl.keys())
-        if not isinstance(regkey, Iterable):
-            work = int(regkey)
-            return len(self.StackObject) + keys.index(work)
-        else:
-            work = tuple(regkey)
-            return tuple((len(self.StackObject) + keys.index(rkey)) for rkey in work)
+        names = list(self._StackColl)
+        work = str(stackobjs.name)
+        return int(names.index(work))
+
+    @BeforeCompile
+    def getRegPosition(self, regobjs):
+        """
+        Given a RegObject return the Tape Position of the associated registry.
+        :param regobjs: Identity Object for the registry.
+        :return: Tape Position of the registry.
+        """
+        keys = list(self._RegistryColl.keys())
+        work = int(regobjs.regkey)
+        return len(self._StackColl) + keys.index(work)
 
     @staticmethod
     def MoveP(start: int, end: int):
@@ -65,6 +149,7 @@ class Environment:
     def clear(self):
         self.__init__()
 
+    @BeforeParse
     def addRoutine(self, func):
         """
         Introduce in the Routine Dictionary the specified routine.
@@ -75,6 +160,7 @@ class Environment:
         assert hasattr(func, "__name__")
         self.RoutineDict[func.__name__] = func
 
+    @BeforeParse
     def Parse(self):
         """
         Do on the data previously provided the Parsing process.
@@ -84,7 +170,9 @@ class Environment:
         # TODO: Estendere il parser in modo dinamica a casi multifunzione
         self.RoutineDict["main"]()
         self.PseudoCode = InterfaceObj.BUFFER.GetMainBuffer()
+        self._parsed = True
 
+    @BeforePrecompile
     def Precompile(self):
         """
         Do the Precompilation process.
@@ -93,7 +181,9 @@ class Environment:
         """
         for op in self.PseudoCode:
             op.PreCompile(self)
+        self._precompiled = True
 
+    @BeforeCompile
     def Compile(self):
         """
         Do the Compilation process.
@@ -107,9 +197,13 @@ class Environment:
             code, newpointer = op.GetCode(self, pointer)
             self._code += code
             pointer = newpointer
+        self._compiled = True
         return self._code
 
     @property
     def BFCode(self):
         """Get the BFCode if already generated."""
         return self._code
+
+
+del BeforeParse, BeforePrecompile, BeforeCompile

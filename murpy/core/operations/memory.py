@@ -1,26 +1,25 @@
-from . import Operation, NestedOperation
+from . import Operation, ONestedOperation, NestedOperation
 
-from ..objects.memory import StackObj
+from ..objects.memory import RegObj
 
 
 # TODO: creare un sistema per la memorizzazione tipizzata
-class NewStaticOp(Operation, NestedOperation):
+class NewStaticOp(Operation, ONestedOperation):
     def __init__(self, name, value):
         super().__init__()
         self._name = name
         self._value = value
+        self._stackobj = None
 
     def PreCompile(self, env):
-        if self._name in env.StackObject.keys():
-            raise Exception("Duplicated Creation!")
-        else:
-            env.StackObject[self._name] = StackObj(self._value)
+        self._stackobj = env.RequestStackName(self._name)
+        self._OMEMOBJ = self._stackobj
 
     def GetCode(self, env, p):
         # CASO SPECIALE UN BYTE:
         # TODO: Estensione a multipli Byte
         code = ""
-        target = int(list(env.StackObject).index(self._name))
+        target = env.getStackPosition(self._stackobj)
         code += env.MoveP(p, target)
         code += "+" * self._value
         return code, target  # Tuple
@@ -32,15 +31,15 @@ class ChangeStaticValueOp(Operation):
         # TODO: Assert the world
         self._name = name  # Id Bersaglio
         self._value = value  # Valore da ficcare nel Berdaglio
+        self._stackobj = None
 
     def PreCompile(self, env):
-        if self._name not in env.StackObject:  # TODO: Heap support
-            raise Exception("Variabile non definita")
+        # TODO: Heap support
+        self._stackobj = env.getStackObjByName(self._name)
 
     def GetCode(self, env, p):
         code = ""
-        target = int(list(env.StackObject).index(self._name))
-        env.StackObject[self._name] = StackObj(self._value)  # Per tenere traccia
+        target = env.getStackPosition(self._stackobj)
         if p > target:
             code += "<" * (p - target)
         else:
@@ -55,16 +54,19 @@ class RegToStackOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
     def __init__(self, stackname):
         super().__init__()
         self._stackname = stackname
+        self._stackobj = None
 
     def PreCompile(self, env):
-        if self._stackname not in env.StackObject:  # TODO: Heap support & Assert the World
-            raise Exception("Variabile non definita")
-        env.RegistryColl[self._IREGKEY].ReserveBit = False
+        self._stackobj = env.getStackObjByName(self._stackname)
+        if not isinstance(self._IMEMOBJ, RegObj):
+            raise Exception("Richiesto RegObj in IMEMOBJ")
+        self._IMEMOBJ.ReserveBit = False
+        self._OMEMOBJ = self._stackobj
 
     def GetCode(self, env, p):
         code = ""
-        start = env.getRegPosition(self._IREGKEY)
-        target = int(list(env.StackObject).index(self._stackname))
+        start = env.getRegPosition(self._IMEMOBJ)
+        target = env.getStackPosition(self._stackobj)
         code += env.MoveP(p, target)
         code += "[-]"
         code += env.MoveP(target, start)
@@ -72,36 +74,35 @@ class RegToStackOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
         return code, start
 
 
-class CopyStackToRegOp(Operation, NestedOperation):  # PROTOCOLLO NESTEDOP
+class CopyStackToRegOp(Operation, ONestedOperation):  # PROTOCOLLO NESTEDOP
     def __init__(self, stackname):
         super().__init__()
         self._stackname = stackname
-        self._targetreg = {}
+        self._targetreg = []
+        self._stackobj = None
 
     def PreCompile(self, env):
-        if self._stackname not in env.StackObject:
-            raise Exception("Variabile non definita")
+        self._stackobj = env.getStackObjByName(self._stackname)
         reservedreg = self._targetreg
         nreg = 2
-        for regKey, regObj in env.RegistryColl.items():
+        for regObj in env.RegistryColl.values():
             if not regObj.ReserveBit and len(reservedreg) < nreg:
-                reservedreg[regKey] = regObj
+                reservedreg.append(regObj)
             elif len(reservedreg) == nreg:
                 break
         while len(reservedreg) < nreg:
-            regKey, regObj = env.RequestRegistry()
-            reservedreg[regKey] = regObj
+            regObj = env.RequestRegistry()
+            reservedreg.append(regObj)
         # Ref Power
-        vals = list(reservedreg.values())
-        vals[0].ReserveBit = True
-        vals[1].ReserveBit = False
-        self._OREGKEY = tuple(reservedreg.keys())[0]
+        self._targetreg[0].ReserveBit = True
+        self._targetreg[1].ReserveBit = False
+        self._OMEMOBJ = reservedreg[0]
 
     def GetCode(self, env, p):
         code = ""
-        A = int(list(env.StackObject).index(self._stackname))
-        R1 = env.getRegPosition(list(self._targetreg.keys())[0])
-        R2 = env.getRegPosition(list(self._targetreg.keys())[1])
+        A = env.getStackPosition(self._stackobj)
+        R1 = env.getRegPosition(self._targetreg[0])
+        R2 = env.getRegPosition(self._targetreg[1])
         code += env.MoveP(p, R1)
         code += "[-]"
         code += env.MoveP(R1, A)

@@ -8,9 +8,7 @@ class EqualOp(OperatorOperation):
 
     def GetCode(self, env, p):
         code = ""
-        A = int(list(env.StackObject).index(self._name1))
-        B = int(list(env.StackObject).index(self._name2))
-        R1, R2, R3 = env.getRegPosition(self._choosedreg.keys())
+        A, B, (R1, R2, R3) = super().initGetCode(env)
         # Cleanup
         code += env.MoveP(p, R3) + "[-]"
         code += env.MoveP(R3, R2) + "[-]"
@@ -36,9 +34,7 @@ class NotEqualOp(OperatorOperation):
 
     def GetCode(self, env, p):
         code = ""
-        A = int(list(env.StackObject).index(self._name1))
-        B = int(list(env.StackObject).index(self._name2))
-        R1, R2, R3 = env.getRegPosition(self._choosedreg.keys())
+        A, B, (R1, R2, R3) = super().initGetCode(env)
         # Cleanup
         code += env.MoveP(p, R3) + "[-]"
         code += env.MoveP(R3, R2) + "[-]"
@@ -63,12 +59,31 @@ class NotEqualOp(OperatorOperation):
 
 class GreaterOp(OperatorOperation):
     def __init__(self, name1, name2):
-        super().__init__(name1, name2, 3, [True, False, False], 0)
+        super().__init__(name1, name2, 6, [False, False, False, False, False, True], 5, True)
 
     def GetCode(self, env, p):
         code = ""
-        A = int(list(env.StackObject).index(self._name1))
-        B = int(list(env.StackObject).index(self._name2))
-        R1, R2, R3 = env.getRegPosition(self._choosedreg.keys())
+        # R1=0 R2=1 R3=0 R4=A R5=B R6=out(0)
+        # >+>>++>+++ +<+ [->-[>]<<] <[->>>>+<<<<] <[-<]
+        # out-p = R1
+        A, B, Regs = super().initGetCode(env)
+        R1, R2, R3, R4, R5, R6 = Regs
+        # Cleanup
+        clrcode, ptr = env.ClearRegList(p, Regs)
+        code += clrcode
         # Begin Operation
-        # TODO: Farlo io e rivederlo
+        #  Introduction
+        code += env.MoveP(ptr, R2) + "+" + env.MoveP(R2, A)
+        code += "[-" + env.MoveP(A, R3) + "+" + env.MoveP(R3, R4) + "+" + env.MoveP(R4, A) + "]"
+        code += env.MoveP(A, R3) + "[-" + env.MoveP(R3, A) + "+" + env.MoveP(A, R3) + "]"
+        code += env.MoveP(R3, B) + "[-" + env.MoveP(B, R3) + "+" + env.MoveP(R3, R5) + "+" + env.MoveP(R5, B) + "]"
+        code += env.MoveP(B, R3) + "[-" + env.MoveP(R3, B) + "+" + env.MoveP(B, R3) + "]"
+        code += env.MoveP(R3, R5) + "+" + env.MoveP(R5, R4) + "+"
+        #  Magic Loop
+        code += "[->-[>]<<]"
+        # Output and Syncronization
+        code += "<[->>>>+<<<<]<[-<]"
+        # CLEANUP
+        clrcode, ptr = env.ClearRegList(R1, (R1, R2, R3, R4, R5))
+        code += clrcode
+        return code, ptr

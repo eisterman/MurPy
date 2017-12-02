@@ -3,32 +3,47 @@
 MurPy is a toolkit and a programming language transpiled in Brainfuck all written in Python 3.
 In future MurPy will support multiple routine and a variant of the Object Oriented Programmation.
 
-At now MurPy is in PRE-ALPHA.
+At now MurPy is in PRE-ALPHA and its design can change radically over time.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
-All you need is Python 3.6
+All you need is **Python 3.4** or successive.
 
 ### Installing
 
 Simply open a new Python Script (.py) and write a main function with the Code and the right import: 
 
 ```
-from _environment import Environment  # Compiler
-from _interfaceobjects import VAR, SET, ADD, SUB  # Commands used
+from murpy.commands.memory.stack import VAR, SET  # Commands used (memory)
+from murpy.commands.operators.math import ADD, SUB, MUL  # Commands used (math)
+from murpy.commands.controlflow.IF import IF, ELSE, ENDIF  # Commands used (conditions)
+from murpy.commands.operators.compare import GR, EQ  # Commands used (comparation)
 
-def main():
+from murpy.compiletools import Environment  # Compiler
+
+
+def main():  # Entry point of the program
     VAR("A", 5)
-    VAR("B", 2)
-    VAR("C", ADD("A", "B"))
-    VAR("D", 2)
+    VAR("B", 0)
+    VAR("hello", 5)
+    IF("A")
+    IF(GR("B","A"))
+    SET("B", 4)
+    ELSE()
+    SET("A", EQ("A", "hello"))
+    ENDIF()
+    ELSE()
+    SET("B", 1)
+    ENDIF()
+    VAR("C", 3)
 ```
 
-Write in the "real main" of the script the compile procedure:
+Write in the _compilation main_ of the script the compile procedure:
 
 ```
 if __name__ == '__main__':
@@ -48,10 +63,11 @@ Now you have the code in the property `env.BFCode`. For example put it in a file
 
 In the file `demoMurPy.py` there is a demo with a Brainfuck Virtual Machine ready at use.
 
-<!--## Running the tests
+## Running the tests
 
-Explain how to run the automated tests for this system
+There is included with the package a set of unittest scripts in the folder [/murpy/tests](murpy/tests/) and in the root a script [run_test.py](run_tests.py) for the automatic run of all the test included in the package without the explicit use of the unittest module manually from the user.
 
+<!--
 ### Break down into end to end tests
 
 Explain what these tests test and why
@@ -90,7 +106,7 @@ See also the list of [contributors](https://github.com/your/project/contributors
 
 ## License
 
-This project is licensed under the GPL - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 <!--
 ## Acknowledgments
 
