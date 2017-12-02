@@ -37,11 +37,24 @@ def main():
     VAR("A", 5)
     VAR("B", 3)
     VAR("C", 1)
+    VAR("D", 1)
     VAR("out1", 0)
     VAR("out2", 10)
     SET("out1", GR("A", "B"))
     SET("out2", GR("C", "B"))
-    # 5 3 1 | 1 0 | reg
+    # 5 3 1 1 | 1 0 | reg
+    IF(GR("A", "B"))
+    SET("C", 10)
+    ELSE()
+    SET("C", 3)
+    ENDIF()
+    IF(GR("B", "A"))
+    SET("D", 10)
+    ELSE()
+    SET("D", 3)
+    ENDIF()
+    VAR("out3", 2)
+    # 5 3 10 3 | 1 0 2 | reg
 
 
 if __name__ == '__main__':

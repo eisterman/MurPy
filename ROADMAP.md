@@ -37,10 +37,10 @@
 - [ ] Support to comparison operation
     - [x] Equal
     - [x] NotEqual
-    - [ ] Greater
-        - [ ] GreaterOp
-        - [x] Command GR
+    - [x] Greater
     - [ ] EqGreater
+        - [ ] EqGreaterOp
+        - [ ] Command EGR
     - [ ] Smaller
     - [ ] EqSmaller
 ## Upgrading the MurPy
@@ -68,16 +68,16 @@
         - [ ] Use this for remove the hazard of duplicated MemObjs
     - [ ] **Possibility of mandatory structure in Stack (ex. R1 A B R2 in tape)**
         - [x] Implement RequestRegistryArray in Environment
-            - [ ] Upgrade with support for recovery contiguous registry not used
+            - [ ] Check for recovery of contiguous registry not used
         - [x] GreaterOp implementation
-- [ ] Internal Command Interface for Brainfuck Virtual Machine
-- [ ] MurPy Commands Update
+- [ ] (?) Internal Command Interface for Brainfuck Virtual Machine
+- [ ] MurPy Commands Update (maybe)
     - [ ] Rewrite commands as like in Sympy
 ## Bugfixes and general improvements
 - [ ] Assert the World
-- [x] Move some code from OperatorOperation child's GetCode to his
+- [x] Move some code from OperatorOperation child's GetCode method to his
 - [ ] Remove NREG in Operation Definition, use only RegistryBitList
-- [ ] New object for pointer management
+- [ ] New object (MurPy side) for pointer management
     - [ ] Env is his factory and contain all the same info of Env
     - [ ] The object can manage pointer operation without verbosity
         - [ ] obj.MoveP(destination) because the source is in memory from initialization
@@ -89,4 +89,5 @@
 - [ ] Precompilation Flags
 - [ ] Compilation Flags
 - [ ] Math operator compile different code with different precomp and comp Flags
+- [ ] Optimization in PostCompilation
 - [ ] Dynamic memory operation (HEAP support)
